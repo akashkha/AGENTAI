@@ -4,13 +4,19 @@ import sys
 sys.path.append(os.path.dirname(__file__))
 from interview_bot.interview_bot import InterviewBot
 
-# Initialize the bot
-if 'bot' not in st.session_state:
-    st.session_state.bot = InterviewBot()
+# Initialize session state
+def init_session_state():
+    if 'bot' not in st.session_state:
+        st.session_state.bot = InterviewBot()
+    if 'messages' not in st.session_state:
+        st.session_state.messages = []
+    if 'bot_mode' not in st.session_state:
+        st.session_state.bot_mode = 'Chat'
+    if 'user_input' not in st.session_state:
+        st.session_state.user_input = ""
 
-# Initialize chat history
-if 'messages' not in st.session_state:
-    st.session_state.messages = []
+# Initialize everything at startup
+init_session_state()
 
 def process_message(message):
     """Process user message and return bot response"""
@@ -148,8 +154,9 @@ if st.session_state.bot_mode == 'Chat':
         bot_response = process_message(user_input)
         st.session_state.messages.append({"role": "assistant", "content": bot_response})
         
-        # Clear input
-        st.session_state.user_input = ""
+        # Clear input using the proper Streamlit way
+        st.session_state["user_input"] = ""
+        st.experimental_rerun()
 
 # Display categories
 elif st.session_state.bot_mode == 'View Categories':
