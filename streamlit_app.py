@@ -1,6 +1,8 @@
 import streamlit as st
-from interview_bot.interview_bot import InterviewBot
 import os
+import sys
+sys.path.append(os.path.dirname(__file__))
+from interview_bot.interview_bot import InterviewBot
 
 # Initialize the bot
 if 'bot' not in st.session_state:

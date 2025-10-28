@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime
-from string_matcher import find_closest_match
+from interview_bot.string_matcher import find_closest_match
 
 class InterviewBot:
     def __init__(self):
