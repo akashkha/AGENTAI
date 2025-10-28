@@ -1,0 +1,374 @@
+{
+  "sources": {
+    "GLASSDOOR": "Questions reported by interview candidates on Glassdoor",
+    "INDEED": "Questions from Indeed company reviews and interviews",
+    "REDDIT": "Questions shared on r/QAEngineers and r/softwaretesting",
+    "LEETCODE": "Common automation testing problems from LeetCode",
+    "COMPANY_REPORTS": "Direct company interview reports"
+  },
+  "companies": {
+    "TCS": {
+      "0-2": [
+        {
+          "question": "Explain TestNG annotations and their execution order",
+          "category": "TestNG",
+          "difficulty": "Basic",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "followup": "How do you handle test dependencies in TestNG?"
+        },
+        {
+          "question": "How do you handle dynamic web tables in Selenium?",
+          "category": "Selenium",
+          "difficulty": "Medium",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "followup": "What are the different ways to locate elements in a web table?"
+        }
+      ],
+      "2-5": [
+        {
+          "question": "Explain your automation framework architecture",
+          "category": "Framework Design",
+          "difficulty": "Advanced",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "followup": "How do you handle test data management in your framework?"
+        },
+        {
+          "question": "How do you handle parallel execution in your framework?",
+          "category": "Framework Design",
+          "difficulty": "Advanced",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "followup": "What are the challenges you faced in parallel execution?"
+        }
+      ]
+    },
+    "Infosys": {
+      "0-2": [
+        {
+          "question": "What are the different types of waits in Selenium?",
+          "category": "Selenium",
+          "difficulty": "Basic",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "followup": "When would you use explicit wait over implicit wait?"
+        },
+        {
+          "question": "How do you handle alerts in Selenium?",
+          "category": "Selenium",
+          "difficulty": "Basic",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "followup": "What are the different types of alerts?"
+        }
+      ],
+      "2-5": [
+        {
+          "question": "Explain data-driven testing framework",
+          "category": "Framework Design",
+          "difficulty": "Advanced",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "followup": "How do you handle different types of test data?"
+        }
+      ]
+    },
+    "Wipro": {
+      "0-2": [
+        {
+          "question": "What is Page Object Model?",
+          "category": "Framework Design",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "followup": "What are the advantages of POM?"
+        }
+      ],
+      "2-5": [
+        {
+          "question": "How do you handle cross-browser testing?",
+          "category": "Framework Design",
+          "difficulty": "Advanced",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "followup": "How do you handle browser compatibility issues?"
+        }
+      ]
+    },
+    "Microsoft India": {
+      "0-2": [
+        {
+          "question": "How do you handle iframes in Selenium?",
+          "category": "Selenium",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "followup": "How to switch between multiple iframes?"
+        }
+      ],
+      "2-5": [
+        {
+          "question": "Explain your approach to API testing",
+          "category": "API Testing",
+          "difficulty": "Advanced",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "followup": "How do you handle authentication in API tests?"
+        }
+      ]
+    },
+    "Amazon India": {
+      "0-2": [
+        {
+          "question": "How do you handle dynamic elements?",
+          "category": "Selenium",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "followup": "What are different ways to handle StaleElementException?"
+        }
+      ],
+      "2-5": [
+        {
+          "question": "Explain your experience with BDD framework",
+          "category": "Framework Design",
+          "difficulty": "Advanced",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "followup": "How do you integrate Cucumber with Selenium?"
+        }
+      ]
+    },
+    "Flipkart": {
+      "0-2": [
+        {
+          "question": "What are the different types of XPath?",
+          "category": "Selenium",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "followup": "What is the difference between absolute and relative XPath?"
+        }
+      ],
+      "2-5": [
+        {
+          "question": "How do you handle performance testing in your framework?",
+          "category": "Performance Testing",
+          "difficulty": "Advanced",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "followup": "What tools do you use for performance testing?"
+        }
+      ]
+    },
+    "Swiggy": {
+      "0-2": [
+        {
+          "question": "How do you handle dropdowns in Selenium?",
+          "category": "Selenium",
+          "difficulty": "Basic",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "followup": "Different ways to select values from dropdown"
+        }
+      ],
+      "2-5": [
+        {
+          "question": "Explain your mobile testing strategy",
+          "category": "Mobile Testing",
+          "difficulty": "Advanced",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "followup": "How do you handle different mobile devices and OS versions?"
+        }
+      ]
+    },
+    "PhonePe": {
+      "0-2": [
+        {
+          "question": "How do you handle screenshots in Selenium?",
+          "category": "Selenium",
+          "difficulty": "Basic",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "followup": "How do you handle failed test case screenshots?"
+        }
+      ],
+      "2-5": [
+        {
+          "question": "Explain your approach to security testing",
+          "category": "Security Testing",
+          "difficulty": "Advanced",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "followup": "What tools do you use for security testing?"
+        }
+      ]
+    },
+    "Paytm": {
+      "0-2": [
+        {
+          "question": "What are TestNG listeners?",
+          "category": "TestNG",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "followup": "How do you implement ITestListener?"
+        }
+      ],
+      "2-5": [
+        {
+          "question": "How do you handle database testing?",
+          "category": "Database Testing",
+          "difficulty": "Advanced",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "followup": "How do you verify database operations in your tests?"
+        }
+      ]
+    },
+    "Popular Interview Questions": {
+      "0-2": [
+        {
+          "question": "How do you handle flaky tests in your automation framework?",
+          "category": "Framework Design",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "source": "GLASSDOOR",
+          "company_reported": ["Google", "Microsoft", "Amazon"],
+          "followup": "What strategies do you use to make tests more reliable?"
+        },
+        {
+          "question": "Explain how you would automate an infinite scroll page",
+          "category": "Selenium",
+          "difficulty": "Medium",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "source": "INDEED",
+          "company_reported": ["Facebook", "LinkedIn"],
+          "followup": "How would you handle dynamic loading of elements?"
+        },
+        {
+          "question": "Write a test framework from scratch - what components would you include?",
+          "category": "Framework Design",
+          "difficulty": "Advanced",
+          "date_asked": "2025-10",
+          "type": "System Design",
+          "source": "REDDIT",
+          "followup": "How would you handle test data management?"
+        }
+      ],
+      "2-5": [
+        {
+          "question": "Design a test automation framework for a microservices architecture",
+          "category": "System Design",
+          "difficulty": "Advanced",
+          "date_asked": "2025-10",
+          "type": "System Design",
+          "source": "LEETCODE",
+          "company_reported": ["Uber", "Netflix"],
+          "followup": "How would you handle service dependencies?"
+        },
+        {
+          "question": "How would you implement automated visual regression testing?",
+          "category": "Visual Testing",
+          "difficulty": "Advanced",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "source": "GLASSDOOR",
+          "company_reported": ["Airbnb", "Pinterest"],
+          "followup": "How do you handle false positives in visual testing?"
+        }
+      ]
+    },
+    "Common Coding Challenges": {
+      "0-2": [
+        {
+          "question": "Create a custom Selenium wait condition for a specific scenario",
+          "category": "Coding",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Coding",
+          "source": "LEETCODE",
+          "followup": "How would you handle timeout scenarios?"
+        },
+        {
+          "question": "Implement a retry mechanism for flaky tests",
+          "category": "Coding",
+          "difficulty": "Medium",
+          "date_asked": "2025-09",
+          "type": "Coding",
+          "source": "REDDIT",
+          "followup": "How would you log retry attempts?"
+        }
+      ],
+      "2-5": [
+        {
+          "question": "Design a data-driven test framework with Excel integration",
+          "category": "Coding",
+          "difficulty": "Advanced",
+          "date_asked": "2025-10",
+          "type": "Coding",
+          "source": "INDEED",
+          "followup": "How would you handle different data types?"
+        },
+        {
+          "question": "Implement a custom test reporter with detailed analytics",
+          "category": "Coding",
+          "difficulty": "Advanced",
+          "date_asked": "2025-09",
+          "type": "Coding",
+          "source": "LEETCODE",
+          "followup": "How would you handle parallel execution reporting?"
+        }
+      ]
+    },
+    "System Design Questions": {
+      "2-5": [
+        {
+          "question": "Design an automated testing pipeline for a large e-commerce application",
+          "category": "System Design",
+          "difficulty": "Advanced",
+          "date_asked": "2025-10",
+          "type": "System Design",
+          "source": "GLASSDOOR",
+          "company_reported": ["Amazon", "Walmart"],
+          "followup": "How would you handle test data in different environments?"
+        },
+        {
+          "question": "Design a scalable mobile test automation framework",
+          "category": "System Design",
+          "difficulty": "Advanced",
+          "date_asked": "2025-09",
+          "type": "System Design",
+          "source": "REDDIT",
+          "followup": "How would you handle different mobile platforms and versions?"
+        }
+      ]
+    }
+  },
+  "categories": {
+    "Selenium": ["Locators", "Waits", "Actions", "Frames", "Windows", "Alerts"],
+    "TestNG": ["Annotations", "Assertions", "Parallel", "Parameters", "Listeners"],
+    "Framework Design": ["POM", "Data-Driven", "Keyword-Driven", "Hybrid", "BDD"],
+    "API Testing": ["REST", "SOAP", "GraphQL", "Postman", "RestAssured"],
+    "Mobile Testing": ["Appium", "Mobile Web", "Native Apps", "Hybrid Apps"],
+    "DevOps": ["Jenkins", "Docker", "Git", "Maven", "Continuous Testing"],
+    "Performance": ["JMeter", "LoadRunner", "Gatling", "Performance Metrics"],
+    "Database": ["SQL", "JDBC", "Database Testing", "Data Validation"],
+    "Security": ["OWASP", "Penetration Testing", "Security Tools"]
+  },
+  "difficulty_levels": {
+    "Basic": "Fundamental concepts and simple implementations",
+    "Medium": "Advanced concepts and moderate implementations",
+    "Advanced": "Complex scenarios and expert-level implementations"
+  },
+  "experience_ranges": {
+    "0-2": "Entry level to junior automation engineers",
+    "2-5": "Mid-level to senior automation engineers",
+    "5+": "Lead and architect level positions"
+}
+}
