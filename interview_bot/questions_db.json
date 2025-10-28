@@ -15,7 +15,9 @@
           "difficulty": "Basic",
           "date_asked": "2025-10",
           "type": "Technical",
-          "followup": "How do you handle test dependencies in TestNG?"
+          "answer": "@BeforeSuite -> @BeforeTest -> @BeforeClass -> @BeforeMethod -> @Test -> @AfterMethod -> @AfterClass -> @AfterTest -> @AfterSuite",
+          "followup": "How do you handle test dependencies in TestNG?",
+          "followup_answer": "Use @Test(dependsOnMethods = {\"methodName\"}) to specify dependencies. You can also use dependsOnGroups for group dependencies."
         },
         {
           "question": "How do you handle dynamic web tables in Selenium?",
@@ -23,7 +25,129 @@
           "difficulty": "Medium",
           "date_asked": "2025-09",
           "type": "Technical",
-          "followup": "What are the different ways to locate elements in a web table?"
+          "answer": "1. Use FindElements to get all rows/columns\n2. Iterate through rows to find specific data\n3. Use XPath or CSS with dynamic locators\n4. Store data in a List or Map for verification",
+          "followup": "What are the different ways to locate elements in a web table?",
+          "followup_answer": "1. XPath: //table//tr[row]/td[column]\n2. CSS: table tr:nth-child(row) td:nth-child(column)\n3. Custom functions using row/column text"
+        },
+        {
+          "question": "What is Page Object Model and why is it used?",
+          "category": "Framework Design",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "POM is a design pattern where web pages are represented as classes, and elements as properties. Benefits:\n1. Code reusability\n2. Better maintenance\n3. Object-oriented approach\n4. Separation of page logic and test logic",
+          "followup": "What is the difference between Page Factory and POM?",
+          "followup_answer": "Page Factory is an optimized way to implement POM. It uses @FindBy annotations and initElements() method to initialize elements, reducing code and improving performance."
+        },
+        {
+          "question": "Explain different types of waits in Selenium",
+          "category": "Selenium",
+          "difficulty": "Basic",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "1. Implicit Wait: Global timeout for all elements\n2. Explicit Wait: Wait for specific condition\n3. Fluent Wait: Similar to explicit wait but with polling interval\n4. Thread.sleep(): Static wait (not recommended)",
+          "followup": "When would you use Explicit Wait over Implicit Wait?",
+          "followup_answer": "Use Explicit Wait when:\n1. Specific elements need different timeout\n2. Need to wait for specific conditions\n3. Want to avoid SynchronizationException"
+        },
+        {
+          "question": "How do you handle different types of popups in Selenium?",
+          "category": "Selenium",
+          "difficulty": "Medium",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "answer": "1. Alert: switchTo().alert() methods\n2. Window popup: getWindowHandles()\n3. Frame: switchTo().frame()\n4. Bootstrap/HTML popup: regular element handling",
+          "followup": "How do you handle authentication popups?",
+          "followup_answer": "1. Using AutoIT\n2. Robot class\n3. Pass credentials in URL: https://username:password@url.com\n4. Using capabilities.setCapability(\"username\", \"password\")"
+        },
+        {
+          "question": "What are different types of frameworks in automation?",
+          "category": "Framework Design",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "1. Data-Driven Framework\n2. Keyword-Driven Framework\n3. Hybrid Framework\n4. Behavior Driven Development Framework\n5. Linear Scripting Framework",
+          "followup": "Which framework would you choose for a new project and why?",
+          "followup_answer": "Hybrid Framework combining POM with BDD because:\n1. Business-readable specifications\n2. Reusable page objects\n3. Data-driven capabilities\n4. Easy maintenance"
+        },
+        {
+          "question": "Explain TestNG listeners and their uses",
+          "category": "TestNG",
+          "difficulty": "Medium",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "answer": "Listeners implement ITestListener interface. Common uses:\n1. Taking screenshots on failure\n2. Custom reporting\n3. Retry failed tests\n4. Logging test execution details",
+          "followup": "How do you implement IRetryAnalyzer?",
+          "followup_answer": "1. Create class implementing IRetryAnalyzer\n2. Override retry method with retry logic\n3. Add retryAnalyzer to @Test annotation\n4. Track retry count in implementation"
+        },
+        {
+          "question": "How do you handle iframes in Selenium?",
+          "category": "Selenium",
+          "difficulty": "Basic",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "Use switchTo().frame() methods:\n1. By index\n2. By name/ID\n3. By WebElement\n4. switchTo().defaultContent() to exit frame",
+          "followup": "How do you handle nested iframes?",
+          "followup_answer": "Switch to frames in sequence:\n1. switchTo().frame(\"parent\")\n2. switchTo().frame(\"child\")\n3. Perform actions\n4. switchTo().defaultContent()"
+        },
+        {
+          "question": "What are different types of XPath?",
+          "category": "Selenium",
+          "difficulty": "Basic",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "answer": "1. Absolute XPath: Starts from root (/html/body/...)\n2. Relative XPath: Starts from any node (//element)\n3. XPath axes: following, ancestor, etc.\n4. XPath functions: contains(), text(), etc.",
+          "followup": "What are XPath axes and when to use them?",
+          "followup_answer": "XPath axes help navigate XML document:\n1. following-sibling: Find next elements\n2. preceding: Find previous elements\n3. ancestor: Find parent elements\n4. descendant: Find child elements"
+        },
+        {
+          "question": "How do you handle SSL certificates in Selenium?",
+          "category": "Selenium",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "1. Using DesiredCapabilities:\n   capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true)\n2. Using ChromeOptions:\n   options.setAcceptInsecureCerts(true)",
+          "followup": "What are other important capabilities in Selenium?",
+          "followup_answer": "1. platformName\n2. browserVersion\n3. setHeadless\n4. proxy settings\n5. unhandledPromptBehavior"
+        },
+        {
+          "question": "Explain different assertions in TestNG",
+          "category": "TestNG",
+          "difficulty": "Basic",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "answer": "1. Hard Assert: Stops execution on failure\n2. Soft Assert: Continues execution\n3. assertEquals()\n4. assertTrue()\n5. assertNotNull()",
+          "followup": "How do you use SoftAssert?",
+          "followup_answer": "1. Create SoftAssert object\n2. Use assertion methods\n3. Call assertAll() at end\n4. Handle multiple verifications"
+        },
+        {
+          "question": "How do you handle Ajax calls in Selenium?",
+          "category": "Selenium",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "1. Use WebDriverWait with ExpectedConditions\n2. Wait for specific elements\n3. Check jQuery.active == 0\n4. Use JavascriptExecutor to verify state",
+          "followup": "How do you verify Ajax responses?",
+          "followup_answer": "1. Use browser developer tools\n2. Selenium Wire for network traffic\n3. Custom JavaScript execution\n4. Wait for specific DOM changes"
+        },
+        {
+          "question": "How do you handle parallel execution in TestNG?",
+          "category": "TestNG",
+          "difficulty": "Advanced",
+          "date_asked": "2025-09",
+          "type": "Technical",
+          "answer": "1. Use parallel attribute in testng.xml\n2. Set thread-count\n3. Use @Test(threadPoolSize)\n4. Handle thread-safe resources",
+          "followup": "How do you handle data sharing in parallel execution?",
+          "followup_answer": "1. Use ThreadLocal variables\n2. Synchronized methods\n3. Atomic variables\n4. Independent test data"
+        },
+        {
+          "question": "Explain your approach to handle StaleElementReferenceException",
+          "category": "Selenium",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "1. Refresh element reference\n2. Create custom wait condition\n3. Use try-catch with retry\n4. Implement custom ExpectedCondition",
+          "followup": "How do you prevent StaleElementReferenceException?",
+          "followup_answer": "1. Use WebDriverWait\n2. Refresh page elements\n3. Store element properties\n4. Implement retry mechanism"
         }
       ],
       "2-5": [

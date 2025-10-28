@@ -175,19 +175,23 @@ class InterviewBot:
         output += "=" * 100 + "\n"
 
         for i, q in enumerate(response["questions"], 1):
-            output += f"{i}. Question: {q['question']}\n"
+            output += f"\n{i}. Question: {q['question']}\n"
             output += f"   Category: {q['category']}\n"
             output += f"   Difficulty: {q['difficulty']}\n"
             output += f"   Asked in: {q['date_asked']}\n"
             if "type" in q:
                 output += f"   Type: {q['type']}\n"
+            if "answer" in q:
+                output += f"\n   Answer:\n   {q['answer']}\n"
             if "source" in q:
                 output += f"   Source: {q['source']}\n"
             if "company_reported" in q:
                 output += f"   Reported by candidates at: {', '.join(q['company_reported'])}\n"
             if "followup" in q:
-                output += f"   Follow-up Question: {q['followup']}\n"
-            output += "-" * 100 + "\n"
+                output += f"\n   Follow-up Question: {q['followup']}\n"
+            if "followup_answer" in q:
+                output += f"   Follow-up Answer:\n   {q['followup_answer']}\n"
+            output += "\n" + "-" * 100 + "\n"
 
         # Add category information
         categories = self.get_categories()
