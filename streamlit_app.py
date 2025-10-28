@@ -6,14 +6,16 @@ from interview_bot.interview_bot import InterviewBot
 
 # Initialize session state
 def init_session_state():
-    if 'bot' not in st.session_state:
-        st.session_state.bot = InterviewBot()
-    if 'messages' not in st.session_state:
-        st.session_state.messages = []
-    if 'bot_mode' not in st.session_state:
-        st.session_state.bot_mode = 'Chat'
-    if 'user_input' not in st.session_state:
-        st.session_state.user_input = ""
+    default_values = {
+        'bot': InterviewBot(),
+        'messages': [],
+        'bot_mode': 'Chat',
+        'chat_input': ""
+    }
+    
+    for key, value in default_values.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
 
 # Initialize everything at startup
 init_session_state()
@@ -143,20 +145,25 @@ with st.sidebar:
 
 # Main chat interface
 if st.session_state.bot_mode == 'Chat':
-    # Chat input
-    user_input = st.text_input("Type your message here...", key="user_input")
+    # Initialize the chat message if it doesn't exist
+    if "chat_input" not in st.session_state:
+        st.session_state.chat_input = ""
     
-    if user_input:
-        # Add user message to chat history
-        st.session_state.messages.append({"role": "user", "content": user_input})
+    # Add a form for better input handling
+    with st.form(key="chat_form", clear_on_submit=True):
+        user_input = st.text_input("Type your message here...")
+        submit_button = st.form_submit_button("Send")
         
-        # Get bot response
-        bot_response = process_message(user_input)
-        st.session_state.messages.append({"role": "assistant", "content": bot_response})
-        
-        # Clear input using the proper Streamlit way
-        st.session_state["user_input"] = ""
-        st.experimental_rerun()
+        if submit_button and user_input:
+            # Add user message to chat history
+            st.session_state.messages.append({"role": "user", "content": user_input})
+            
+            # Get bot response
+            bot_response = process_message(user_input)
+            st.session_state.messages.append({"role": "assistant", "content": bot_response})
+            
+            # Force a rerun to update the chat
+            st.experimental_rerun()
 
 # Display categories
 elif st.session_state.bot_mode == 'View Categories':
