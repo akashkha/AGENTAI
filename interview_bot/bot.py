@@ -6,28 +6,80 @@ from .settings import get_db_path
 
 class InterviewBot:
     def __init__(self):
-        self.db_path = get_db_path()  # This will raise an error if DB not found
-        self.questions_db = None
-        self.companies_cache = None
-        self.categories_cache = None
-        self.search_history = {}
-        self.difficulty_levels = ["Basic", "Medium", "Advanced"]  # Added difficulty levels
-        # Load questions directly from file
-        self.load_questions()
+        try:
+            # Print current working directory for debugging
+            current_dir = os.getcwd()
+            print(f"Current working directory: {current_dir}")
+            print(f"Current file location: {os.path.abspath(__file__)}")
+            
+            # In deployed environment, look in current directory first
+            possible_paths = [
+                os.path.join(current_dir, 'questions_db.json'),  # Try current directory first
+                os.path.join(current_dir, 'interview_bot', 'questions_db.json'),
+                os.path.abspath(os.path.join(os.path.dirname(__file__), 'questions_db.json')),
+                os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'questions_db.json'))
+            ]
+            
+            # Try each path and use the first one that exists
+            for path in possible_paths:
+                print(f"Trying path: {path}")
+                if os.path.exists(path):
+                    print(f"Found database at: {path}")
+                    self.db_path = path
+                    break
+            else:
+                print("No database file found!")
+                raise FileNotFoundError("Could not find questions_db.json")
+                
+            self.questions_db = None
+            self.companies_cache = None
+            self.categories_cache = None
+            self.search_history = {}
+            self.difficulty_levels = ["Basic", "Medium", "Advanced"]
+            
+            # Load questions
+            self.load_questions()
+            
+            # Verify data is loaded
+            if not self.companies_cache:
+                print("Warning: No companies loaded!")
+            else:
+                print(f"Successfully loaded {len(self.companies_cache)} companies")
+                
+        except Exception as e:
+            print(f"Error in InterviewBot initialization: {str(e)}")
+            raise
         
     def load_questions(self):
         """Load questions from the JSON database"""
         if self.questions_db:  # Already loaded
             return
             
-        for path in self.fallback_paths:
-            try:
-                print(f"Trying to load questions from: {path}")
-                with open(path, 'r', encoding='utf-8') as file:
-                    self.questions_db = json.load(file)
-                # Cache commonly accessed data
-                self.companies_cache = list(self.questions_db.get("companies", {}).keys())
-                self.categories_cache = self.questions_db.get("categories", {})
+        try:
+            print(f"Loading questions from: {self.db_path}")
+            with open(self.db_path, 'r', encoding='utf-8') as file:
+                self.questions_db = json.load(file)
+            
+            # Cache commonly accessed data
+            if not self.questions_db:
+                print("Warning: questions_db is empty!")
+                raise ValueError("Database is empty or invalid")
+            
+            companies = self.questions_db.get("companies", {})
+            if not companies:
+                print("Warning: No companies found in database!")
+                raise ValueError("No companies found in database")
+                
+            self.companies_cache = list(companies.keys())
+            print(f"Loaded {len(self.companies_cache)} companies: {self.companies_cache}")
+            
+            categories = self.questions_db.get("categories", {})
+            if not categories:
+                print("Warning: No categories found in database!")
+                raise ValueError("No categories found in database")
+                
+            self.categories_cache = categories
+            print(f"Loaded {len(categories)} categories: {list(categories.keys())}")
         except Exception as e:
             print(f"Error loading questions: {str(e)}")
             # Initialize with empty data if file can't be loaded
