@@ -15,10 +15,8 @@ class InterviewBot:
         self.questions_db = None
         self.companies_cache = None
         self.categories_cache = None
-        self.aggregator = QuestionAggregator()
-        # Initialize by loading questions
+        # Load questions directly from local file
         self.load_questions()
-        self.search_history = {}
         
     def search_internet(self, query, category=None):
         """Search internet for additional information based on query type"""
