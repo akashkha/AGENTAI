@@ -1,5 +1,6 @@
 import streamlit as st
-from interview_bot import InterviewBot
+from interview_bot.bot import InterviewBot
+import os
 
 # Initialize session state
 def init_session_state():
