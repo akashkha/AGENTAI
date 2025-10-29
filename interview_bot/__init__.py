@@ -1,5 +1,5 @@
-# Version
-__version__ = '1.0.0'
+"""Interview Bot Package"""
+from .bot import InterviewBot
 
-# Import core functionality
-from .interview_bot import InterviewBot  # noqa: F401
+__version__ = '1.0.0'
+__all__ = ['InterviewBot']
