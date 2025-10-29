@@ -12,13 +12,8 @@ class InterviewBot:
             print(f"Current working directory: {current_dir}")
             print(f"Current file location: {os.path.abspath(__file__)}")
             
-            # In deployed environment, look in current directory first
-            possible_paths = [
-                os.path.join(current_dir, 'questions_db.json'),  # Try current directory first
-                os.path.join(current_dir, 'interview_bot', 'questions_db.json'),
-                os.path.abspath(os.path.join(os.path.dirname(__file__), 'questions_db.json')),
-                os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'questions_db.json'))
-            ]
+            # Look for questions_db.json in the interview_bot package directory
+            self.db_path = os.path.join(os.path.dirname(__file__), 'questions_db.json')
             
             # Try each path and use the first one that exists
             for path in possible_paths:
