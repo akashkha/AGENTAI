@@ -117,51 +117,124 @@ st.markdown("""
 # App title
 st.title("🤖 Interview Preparation Assistant")
 
+# Initialize bot and cache data
+if 'bot' not in st.session_state:
+    st.session_state.bot = InterviewBot()
+
+if 'companies' not in st.session_state:
+    st.session_state.companies = st.session_state.bot.get_available_companies()
+if 'categories' not in st.session_state:
+    st.session_state.categories = ["All"] + list(st.session_state.bot.get_categories().keys())
+if 'difficulty_levels' not in st.session_state:
+    st.session_state.difficulty_levels = ["All"] + st.session_state.bot.get_difficulty_levels()
+
 # Quick Access Section
 st.markdown("### 🚀 Quick Access")
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
+col3, col4 = st.columns(2)
 
 with col1:
-    companies = ["TCS", "Infosys", "Wipro", "Microsoft India", "Amazon India", "Mastercard", "Popular Interview Questions"]
-    selected_company = st.selectbox("Select Company", companies)
+    selected_company = st.selectbox(
+        "Select Company",
+        st.session_state.companies,
+        help="Choose a company to get interview questions"
+    )
 
 with col2:
-    experience = st.slider("Years of Experience", 0, 10, 2)
+    experience = st.slider(
+        "Years of Experience",
+        0, 10, 2,
+        help="Select your years of experience"
+    )
 
 with col3:
-    categories = list(st.session_state.bot.get_categories().keys())
-    selected_category = st.selectbox("Select Category", ["All"] + categories)
+    selected_category = st.selectbox(
+        "Select Category",
+        st.session_state.categories,
+        help="Filter questions by category"
+    )
 
-if st.button("Get Questions"):
-    category = selected_category if selected_category != "All" else None
-    response = st.session_state.bot.get_interview_questions(selected_company, experience, category)
+with col4:
+    selected_difficulty = st.selectbox(
+        "Select Difficulty",
+        st.session_state.difficulty_levels,
+        help="Filter questions by difficulty level"
+    )
+
+# Search box
+search_query = st.text_input(
+    "🔍 Search for specific questions",
+    help="Enter keywords to search across all questions"
+)
+
+if search_query:
+    search_results = st.session_state.bot.search_questions(search_query)
+    if search_results:
+        st.markdown("### Search Results")
+        for result in search_results:
+            with st.expander(f"Question from {result['company']} ({result['experience']} years)"):
+                st.write(f"**Category:** {result.get('category', 'General')}")
+                st.write(f"**Difficulty:** {result.get('difficulty', 'Medium')}")
+                st.write(f"**Q:** {result['question']}")
+                if result.get('answer'):
+                    st.write(f"**A:** {result['answer']}")
+
+# Get Questions button
+if st.button("Get Questions", type="primary"):
+    category = None if selected_category == "All" else selected_category
+    difficulty = None if selected_difficulty == "All" else selected_difficulty
+    response = st.session_state.bot.get_interview_questions(
+        selected_company,
+        experience,
+        category,
+        difficulty
+    )
+    
+    # Show results in an organized way
     st.markdown("### Results")
-    st.markdown(st.session_state.bot.format_response(response))
+    formatted_response = st.session_state.bot.format_response(response)
+    
+    # Split the response into questions
+    questions = formatted_response.split("-" * 80)
+    
+    # Show header
+    st.markdown(questions[0])
+    
+    # Show each question in an expander
+    for question in questions[1:-1]:  # Skip header and empty last element
+        if question.strip():
+            # Extract the question title from the first line
+            title = question.strip().split('\n')[0]
+            with st.expander(title):
+                st.markdown(question)
 
 st.divider()
-st.markdown("Or chat with me about interview questions for different companies and roles!")
+st.markdown("### 💬 Chat Interface")
+st.markdown("Ask me anything about interview questions, or type 'help' for guidance.")
 
-# Initialize session state for bot mode
-if 'bot_mode' not in st.session_state:
-    st.session_state.bot_mode = 'chat'
+# Main chat interface
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-# Sidebar for mode selection and filters
-with st.sidebar:
-    st.title("Options")
-    st.session_state.bot_mode = st.radio("Select Mode", ['Chat', 'Browse Questions', 'View Categories'])
+# Add a form for better input handling
+with st.form(key="chat_form", clear_on_submit=True):
+    user_input = st.text_input("Type your message here...")
+    col1, col2 = st.columns([1, 5])
+    with col1:
+        submit_button = st.form_submit_button("Send")
+    with col2:
+        if st.form_submit_button("Clear Chat"):
+            st.session_state.messages = []
+            st.rerun()
     
-    if st.session_state.bot_mode == 'Browse Questions':
-        st.subheader("Filters")
-        companies = st.session_state.bot.get_available_companies()
-        selected_company = st.selectbox("Select Company", companies)
-        experience = st.slider("Years of Experience", 0, 10, 2)
-        categories = list(st.session_state.bot.get_categories().keys())
-        selected_category = st.selectbox("Select Category", ["All"] + categories)
+    if submit_button and user_input:
+        # Add user message to chat history
+        st.session_state.messages.append({"role": "user", "content": user_input})
         
-        if st.button("Get Questions"):
-            category = selected_category if selected_category != "All" else None
-            response = st.session_state.bot.get_interview_questions(selected_company, experience, category)
-            st.session_state.messages.append({"role": "assistant", "content": st.session_state.bot.format_response(response)})
+        # Get bot response
+        bot_response = process_message(user_input)
+        st.session_state.messages.append({"role": "assistant", "content": bot_response})
+        st.rerun()
 
 # Main chat interface
 if st.session_state.bot_mode == 'Chat':
