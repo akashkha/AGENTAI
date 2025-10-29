@@ -6,15 +6,35 @@ def search_interview_questions(company_name, role="automation tester"):
     """Search for interview questions online"""
     print(f"Searching questions for company: {company_name}")
     
-    # Initialize with mandatory basic questions
-    questions = [
+    # Company-specific questions template
+    company_questions = [
         {
-            "question": f"How would you approach testing {company_name}'s web applications using Selenium?",
-            "answer": "Testing approach:\n1. Understand business requirements\n2. Create test plan\n3. Implement page objects\n4. Set up test data\n5. Write test scripts\n6. Handle dynamic elements\n7. Implement reporting",
+            "question": f"How would you design a Selenium framework for {company_name}'s web applications?",
+            "answer": f"Framework design for {company_name}:\n1. Page Object Model implementation\n2. Custom wait strategies\n3. Reporting and logging\n4. Data-driven approach\n5. CI/CD integration\n6. Cross-browser testing\n7. Error handling and recovery",
             "category": "Selenium",
             "difficulty": "Medium",
-            "type": "Technical"
+            "type": "Technical",
+            "source": f"Custom for {company_name}"
         },
+        {
+            "question": f"What automation challenges would you expect at {company_name} and how would you handle them?",
+            "answer": f"Expected challenges at {company_name}:\n1. Dynamic UI elements handling\n2. Test data management\n3. Environment synchronization\n4. Performance considerations\n5. Cross-browser compatibility\n6. CI/CD pipeline integration\n7. Maintenance and scalability",
+            "category": "Selenium",
+            "difficulty": "Medium",
+            "type": "Technical",
+            "source": f"Custom for {company_name}"
+        },
+        {
+            "question": f"How would you implement parallel test execution for {company_name}'s test suite?",
+            "answer": f"Parallel execution strategy:\n1. TestNG parallel execution\n2. Thread management\n3. Resource allocation\n4. Data isolation\n5. Report aggregation\n6. Grid setup\n7. Load balancing",
+            "category": "Selenium",
+            "difficulty": "Medium",
+            "type": "Technical",
+            "source": f"Custom for {company_name}"
+        }
+    ]
+    
+    questions = company_questions
         {
             "question": "Explain how to handle dynamic web elements in Selenium",
             "answer": "To handle dynamic elements:\n1. Use explicit waits\n2. Implement proper synchronization\n3. Use dynamic XPath/CSS selectors\n4. Handle StaleElementException\n5. Implement retry mechanisms",

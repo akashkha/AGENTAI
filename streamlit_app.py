@@ -87,6 +87,7 @@ if st.button("🔍 Get Questions", type="primary", key="search"):
                     # Display questions in a clean format
                     for i, q in enumerate(response["questions"], 1):
                         with st.expander(f"Question #{i}: {q.get('question', '')[:100]}..."):
+                            st.markdown(f"**Source:** {q.get('source', 'Generated')} :link:")
                             st.markdown(f"**Category:** {q.get('category', 'General')}")
                             st.markdown(f"**Difficulty:** {q.get('difficulty', 'Medium')}")
                             st.markdown(f"**Question:**\n{q.get('question')}")

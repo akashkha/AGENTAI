@@ -14,6 +14,33 @@ class InterviewBot:
             print(f"Current file location: {os.path.abspath(__file__)}")
             
             # Initialize default questions that will always be available
+            self.base_questions = [
+                {
+                    "question": "What are the key components of a Selenium test framework?",
+                    "answer": "1. WebDriver setup and configuration\n2. Page Object Model implementation\n3. Test data management\n4. Reporting and logging\n5. Utility functions\n6. Test base classes\n7. Configuration management",
+                    "category": "Selenium",
+                    "difficulty": "Medium",
+                    "type": "Technical",
+                    "source": "Standard Interview Question"
+                },
+                {
+                    "question": "How do you handle dynamic elements in Selenium?",
+                    "answer": "1. Explicit waits with Expected Conditions\n2. Custom wait conditions\n3. JavaScript execution if needed\n4. Dynamic XPath strategies\n5. Proper synchronization mechanisms",
+                    "category": "Selenium",
+                    "difficulty": "Medium",
+                    "type": "Technical",
+                    "source": "Standard Interview Question"
+                },
+                {
+                    "question": "Explain your approach to data-driven testing in Selenium",
+                    "answer": "1. External data sources (Excel, CSV, JSON)\n2. Parameterization techniques\n3. Test data management strategies\n4. Data providers implementation\n5. Configuration handling",
+                    "category": "Selenium",
+                    "difficulty": "Medium",
+                    "type": "Technical",
+                    "source": "Standard Interview Question"
+                }
+            ]
+            
             self.default_questions = {
                 "0-2": [
                     {
@@ -162,6 +189,9 @@ class InterviewBot:
                 return {"status": "error", "message": "Please provide a valid company name."}
             
             print("Debug: Starting question retrieval...")
+            
+            # Always start with base questions
+            questions = self.base_questions.copy()
             
             company = company.strip()
             exp_range = self.get_experience_range(years_of_experience)
