@@ -1,5 +1,5 @@
 import streamlit as st
-from interview_bot import InterviewBot
+from interview_bot.interview_bot import InterviewBot
 import os
 
 # Initialize the bot

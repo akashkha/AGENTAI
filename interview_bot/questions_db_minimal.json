@@ -1,0 +1,29 @@
+{
+  "sources": {
+    "GLASSDOOR": "Questions reported by interview candidates",
+    "COMPANY_REPORTS": "Direct reports"
+  },
+  "companies": {
+    "TCS": {
+      "0-2": [
+        {
+          "question": "What is Selenium?",
+          "category": "Selenium",
+          "difficulty": "Basic",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "Selenium is a web testing framework"
+        }
+      ]
+    }
+  },
+  "categories": {
+    "Selenium": ["Web Testing", "Automation"],
+    "API Testing": ["REST", "SOAP"]
+  },
+  "difficulty_levels": {
+    "Basic": "Fundamental concepts",
+    "Medium": "Advanced concepts",
+    "Hard": "Expert concepts"
+  }
+}

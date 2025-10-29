@@ -1,0 +1,28 @@
+{
+  "sources": {},
+  "companies": {
+    "Common Coding Challenges": {
+      "0-2": [
+        {
+          "question": "Write a function to handle dynamic waits in Selenium",
+          "category": "Automation",
+          "difficulty": "Easy",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "Key principles include explicit waits and proper exception handling"
+        }
+      ]
+    }
+  },
+  "categories": {
+    "Automation": ["Selenium", "Test Framework", "CI/CD"],
+    "API Testing": ["REST", "SOAP", "GraphQL"],
+    "Performance": ["Load Testing", "Stress Testing", "Monitoring"],
+    "Security": ["Penetration Testing", "Security Scanning", "Compliance"]
+  },
+  "difficulty_levels": {
+    "Easy": "Basic concepts and fundamentals",
+    "Medium": "Practical implementation and specific scenarios",
+    "Hard": "Complex problems and architectural decisions"
+  }
+}

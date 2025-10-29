@@ -1,0 +1,51 @@
+{
+  "sources": {
+    "GLASSDOOR": "Questions reported by interview candidates on Glassdoor",
+    "INDEED": "Questions from Indeed company reviews and interviews",
+    "REDDIT": "Questions shared on r/QAEngineers and r/softwaretesting",
+    "LEETCODE": "Common automation testing problems from LeetCode",
+    "COMPANY_REPORTS": "Direct company interview reports"
+  },
+  "companies": {
+    "Mastercard": {
+      "0-2": [
+        {
+          "question": "How do you handle API testing for payment transactions?",
+          "category": "API Testing",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "For payment API testing:\n1. Use proper test data (test card numbers)\n2. Implement secure authentication\n3. Test response codes and error scenarios\n4. Verify transaction states\n5. Handle encryption/decryption\n6. Test transaction rollbacks\n7. Validate security headers",
+          "followup": "How do you handle sensitive data in API tests?",
+          "followup_answer": "Handle sensitive data by:\n1. Using environment variables\n2. Implementing data masking\n3. Using secure vaults\n4. Encryption for stored data\n5. Cleanup test data after execution"
+        }
+      ]
+    },
+    "TCS": {
+      "0-2": [
+        {
+          "question": "What are TestNG listeners?",
+          "category": "TestNG",
+          "difficulty": "Medium",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "TestNG listeners are interfaces that modify TestNG's default behavior. Common uses include:\n1. Taking screenshots on failure\n2. Custom reporting\n3. Retry failed tests\n4. Logging test execution details",
+          "followup": "How do you implement IRetryAnalyzer?",
+          "followup_answer": "To implement IRetryAnalyzer:\n1. Create a class implementing IRetryAnalyzer\n2. Override retry() method\n3. Add retryAnalyzer parameter to @Test\n4. Track retry count in implementation"
+        }
+      ]
+    }
+  },
+  "categories": {
+    "Selenium": ["Web Testing", "Locators", "WebDriver", "Actions", "Waits"],
+    "API Testing": ["REST", "SOAP", "GraphQL", "Security", "Performance"],
+    "TestNG": ["Annotations", "Assertions", "Parallel", "Listeners", "DataProvider"],
+    "Framework Design": ["POM", "Data-Driven", "Keyword-Driven", "BDD", "Hybrid"],
+    "Performance": ["JMeter", "Load Testing", "Stress Testing", "Monitoring", "Analysis"]
+  },
+  "difficulty_levels": {
+    "Basic": "Fundamental concepts and simple implementations",
+    "Medium": "Advanced concepts and moderate implementations",
+    "Advanced": "Complex scenarios and expert-level implementations"
+  }
+}

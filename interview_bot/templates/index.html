@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Preparation Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .chat-container {
+            height: calc(100vh - 180px);
+        }
+        .message {
+            max-width: 80%;
+            margin: 8px;
+            padding: 12px;
+            border-radius: 12px;
+        }
+        .user-message {
+            background-color: #075E54;
+            color: white;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #DCF8C6;
+            color: black;
+            margin-right: auto;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
+            <!-- Header -->
+            <div class="bg-green-600 text-white p-4 rounded-t-lg">
+                <h1 class="text-xl font-bold">Interview Preparation Assistant</h1>
+                <p class="text-sm">Ask me about interview questions for different companies and roles</p>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="chat-container overflow-y-auto p-4" id="chatContainer">
+                <div class="message bot-message">
+                    <pre>Hello! I'm your Interview Preparation Assistant. How can I help you today?
+                        
+Type 'help' to see what I can do!</pre>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t p-4">
+                <div class="flex space-x-4">
+                    <input type="text" id="userInput" 
+                           class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                           placeholder="Type your message here..."
+                           onkeypress="handleKeyPress(event)">
+                    <button onclick="sendMessage()"
+                            class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function appendMessage(message, isUser) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            
+            const pre = document.createElement('pre');
+            pre.textContent = message;
+            messageDiv.appendChild(pre);
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            appendMessage(message, true);
+            input.value = '';
+            
+            try {
+                // Send message to server
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    appendMessage('Sorry, an error occurred. Please try again.', false);
+                } else {
+                    appendMessage(data.response.content, false);
+                }
+            } catch (error) {
+                appendMessage('Sorry, an error occurred. Please try again.', false);
+            }
+        }
+    </script>
+</body>
+</html>
