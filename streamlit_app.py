@@ -165,16 +165,23 @@ if 'difficulty_levels' not in st.session_state:
         st.error(f"Error loading difficulty levels: {str(e)}")
         st.stop()
 
-# Quick Access Section
-st.markdown("### 🚀 Quick Access")
-
-# Company search and selection
-search_or_select = st.radio(
-    "How would you like to find questions?",
-    ["Select from list", "Search any company"],
-    horizontal=True,
-    help="Choose whether to select from existing companies or search across all questions"
+# Mode selection
+mode = st.sidebar.radio(
+    "🚀 Quick Access",
+    ["Chat", "Browse Questions", "View Categories"],
+    help="Choose how you want to interact with the assistant"
 )
+
+if mode == "Browse Questions":
+    st.markdown("### Browse Interview Questions")
+    
+    # Company search and selection
+    search_or_select = st.radio(
+        "How would you like to find questions?",
+        ["Select from list", "Search any company"],
+        horizontal=True,
+        help="Choose whether to select from existing companies or search across all questions"
+    )
 
 col1, col2 = st.columns(2)
 col3, col4 = st.columns(2)
@@ -273,9 +280,19 @@ if st.button("Get Questions", type="primary"):
             with st.expander(title):
                 st.markdown(question)
 
-st.divider()
-st.markdown("### 💬 Chat Interface")
-st.markdown("Ask me anything about interview questions, or type 'help' for guidance.")
+# Show appropriate interface based on mode
+if mode == "Chat":
+    st.markdown("### 💬 Chat Interface")
+    st.markdown("Ask me anything about interview questions, or type 'help' for guidance.")
+    
+    # Chat interface code here
+elif mode == "View Categories":
+    st.markdown("### 🗒 Categories")
+    categories = st.session_state.bot.get_categories()
+    for category, topics in categories.items():
+        with st.expander(f"{category}"):
+            for topic in topics:
+                st.write(f"- {topic}")
 
 # Main chat interface
 if "messages" not in st.session_state:
