@@ -4,9 +4,11 @@ from datetime import datetime
 try:
     from .string_matcher import find_closest_match
     from .question_aggregator import QuestionAggregator
+    from .search_engine import SearchEngine
 except ImportError:
     from string_matcher import find_closest_match
     from question_aggregator import QuestionAggregator
+    from search_engine import SearchEngine
 
 class InterviewBot:
     def __init__(self):
@@ -15,6 +17,8 @@ class InterviewBot:
         self.questions_db = None
         self.companies_cache = None
         self.categories_cache = None
+        self.search_engine = SearchEngine()
+        self.search_history = {}
         # Load questions directly from local file
         self.load_questions()
         
@@ -123,7 +127,6 @@ class InterviewBot:
     pass""",
                         "solution": """from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-<<<<<<< HEAD
 
 def wait_for_element(driver, locator, timeout=10):
     try:
