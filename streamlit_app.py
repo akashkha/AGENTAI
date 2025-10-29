@@ -120,22 +120,38 @@ st.title("🤖 Interview Preparation Assistant")
 # Initialize bot and cache data
 if 'bot' not in st.session_state:
     st.session_state.bot = InterviewBot()
+    # Debug info
+    st.write("Bot initialized")
 
 # Initialize session data
 if 'companies' not in st.session_state:
-    st.session_state.companies = st.session_state.bot.get_available_companies()
+    companies = st.session_state.bot.get_available_companies()
+    if not companies:
+        st.error("Failed to load companies. Please refresh the page.")
+    st.session_state.companies = companies
+    # Debug info
+    st.write(f"Loaded {len(companies)} companies")
     
 # Get all unique categories including subcategories
 if 'categories' not in st.session_state:
     categories = st.session_state.bot.get_categories()
+    if not categories:
+        st.error("Failed to load categories. Please refresh the page.")
     all_categories = set()
     for main_category, subcategories in categories.items():
         all_categories.add(main_category)
         all_categories.update(subcategories)
     st.session_state.categories = ["All"] + sorted(list(all_categories))
+    # Debug info
+    st.write(f"Loaded {len(all_categories)} categories")
     
 if 'difficulty_levels' not in st.session_state:
-    st.session_state.difficulty_levels = ["All"] + st.session_state.bot.get_difficulty_levels()
+    difficulty_levels = st.session_state.bot.get_difficulty_levels()
+    if not difficulty_levels:
+        st.error("Failed to load difficulty levels. Please refresh the page.")
+    st.session_state.difficulty_levels = ["All"] + difficulty_levels
+    # Debug info
+    st.write(f"Loaded {len(difficulty_levels)} difficulty levels")
 
 # Quick Access Section
 st.markdown("### 🚀 Quick Access")

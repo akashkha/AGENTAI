@@ -6,20 +6,32 @@ from datetime import datetime
 class InterviewBot:
     def __init__(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(current_dir)
         self.db_path = os.path.join(current_dir, 'questions_db.json')
+        # Fallback paths for different deployment scenarios
+        self.fallback_paths = [
+            self.db_path,
+            os.path.join(current_dir, 'questions_db.json'),
+            os.path.join(parent_dir, 'interview_bot', 'questions_db.json'),
+            os.path.join(parent_dir, 'questions_db.json')
+        ]
         self.questions_db = None
         self.companies_cache = None
         self.categories_cache = None
         self.search_history = {}
         self.difficulty_levels = ["Basic", "Medium", "Advanced"]  # Added difficulty levels
-        # Load questions directly from local file
+        # Load questions directly from file
         self.load_questions()
         
     def load_questions(self):
         """Load questions from the JSON database"""
-        try:
-            if not self.questions_db:  # Load only if not already loaded
-                with open(self.db_path, 'r', encoding='utf-8') as file:
+        if self.questions_db:  # Already loaded
+            return
+            
+        for path in self.fallback_paths:
+            try:
+                print(f"Trying to load questions from: {path}")
+                with open(path, 'r', encoding='utf-8') as file:
                     self.questions_db = json.load(file)
                 # Cache commonly accessed data
                 self.companies_cache = list(self.questions_db.get("companies", {}).keys())
