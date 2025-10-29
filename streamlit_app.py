@@ -245,6 +245,7 @@ if search_query:
 
 # Get Questions button
 if st.button("Get Questions", type="primary"):
+    with st.spinner("Searching for questions (including online sources)..."):
     category = None if selected_category == "All" else selected_category
     difficulty = None if selected_difficulty == "All" else selected_difficulty
     response = st.session_state.bot.get_interview_questions(

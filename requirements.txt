@@ -2,4 +2,6 @@ streamlit>=1.28.1
 python-dateutil>=2.8.2
 Pillow>=9.5.0
 json5==0.9.14
+requests>=2.31.0
+beautifulsoup4>=4.12.2
 -e .

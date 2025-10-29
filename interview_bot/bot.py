@@ -3,6 +3,7 @@ import os
 import json
 from datetime import datetime
 from .settings import get_db_path
+from .web_search import search_interview_questions
 
 class InterviewBot:
     def __init__(self):
@@ -102,19 +103,24 @@ class InterviewBot:
             if company in (self.questions_db.get("companies") or {}):
                 questions = self.questions_db.get("companies", {}).get(company, {}).get(exp_range, [])
             else:
-                # Search across all companies for relevant questions
-                company_lower = company.lower()
-                for comp, data in self.questions_db.get("companies", {}).items():
-                    exp_questions = data.get(exp_range, [])
-                    for q in exp_questions:
-                        # Check question text and answer for relevance
-                        if (company_lower in q.get('question', '').lower() or 
-                            company_lower in q.get('answer', '').lower()):
-                            q_copy = q.copy()
-                            q_copy['original_company'] = comp
-                            questions.append(q_copy)
+            # Search across all companies for relevant questions
+            company_lower = company.lower()
+            for comp, data in self.questions_db.get("companies", {}).items():
+                exp_questions = data.get(exp_range, [])
+                for q in exp_questions:
+                    # Check question text and answer for relevance
+                    if (company_lower in q.get('question', '').lower() or 
+                        company_lower in q.get('answer', '').lower()):
+                        q_copy = q.copy()
+                        q_copy['original_company'] = comp
+                        questions.append(q_copy)
             
-            # Apply filters
+            # If few or no results, search online
+            if len(questions) < 3:
+                web_results = search_interview_questions(company)
+                for result in web_results:
+                    result['experience_range'] = exp_range
+                    questions.append(result)            # Apply filters
             if category:
                 questions = [q for q in questions if q.get("category") == category]
             
@@ -177,6 +183,8 @@ class InterviewBot:
             output += f"Question #{i}:\n"
             if 'original_company' in q:
                 output += f"[Found in {q['original_company']} interviews]\n"
+            elif 'source' in q:
+                output += f"[Found from online source]\n"
             output += f"Category: {q.get('category', 'General')}\n"
             output += f"Q: {q.get('question')}\n"
             if q.get('answer'):
