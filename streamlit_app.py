@@ -116,7 +116,30 @@ st.markdown("""
 
 # App title
 st.title("🤖 Interview Preparation Assistant")
-st.markdown("Ask me about interview questions for different companies and roles!")
+
+# Quick Access Section
+st.markdown("### 🚀 Quick Access")
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    companies = st.session_state.bot.get_available_companies()
+    selected_company = st.selectbox("Select Company", companies)
+
+with col2:
+    experience = st.slider("Years of Experience", 0, 10, 2)
+
+with col3:
+    categories = list(st.session_state.bot.get_categories().keys())
+    selected_category = st.selectbox("Select Category", ["All"] + categories)
+
+if st.button("Get Questions"):
+    category = selected_category if selected_category != "All" else None
+    response = st.session_state.bot.get_interview_questions(selected_company, experience, category)
+    st.markdown("### Results")
+    st.markdown(st.session_state.bot.format_response(response))
+
+st.divider()
+st.markdown("Or chat with me about interview questions for different companies and roles!")
 
 # Initialize session state for bot mode
 if 'bot_mode' not in st.session_state:
@@ -160,7 +183,7 @@ if st.session_state.bot_mode == 'Chat':
             st.session_state.messages.append({"role": "assistant", "content": bot_response})
             
             # Force a rerun to update the chat
-            st.experimental_rerun()
+            st.rerun()
 
 # Display categories
 elif st.session_state.bot_mode == 'View Categories':
@@ -180,4 +203,4 @@ for message in st.session_state.messages:
 # Clear chat button
 if st.button("Clear Chat"):
     st.session_state.messages = []
-    st.experimental_rerun()
+    st.rerun()
