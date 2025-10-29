@@ -2,19 +2,11 @@
 import os
 import json
 from datetime import datetime
+from .settings import get_db_path
 
 class InterviewBot:
     def __init__(self):
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        parent_dir = os.path.dirname(current_dir)
-        self.db_path = os.path.join(current_dir, 'questions_db.json')
-        # Fallback paths for different deployment scenarios
-        self.fallback_paths = [
-            self.db_path,
-            os.path.join(current_dir, 'questions_db.json'),
-            os.path.join(parent_dir, 'interview_bot', 'questions_db.json'),
-            os.path.join(parent_dir, 'questions_db.json')
-        ]
+        self.db_path = get_db_path()  # This will raise an error if DB not found
         self.questions_db = None
         self.companies_cache = None
         self.categories_cache = None
