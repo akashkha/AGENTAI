@@ -13,6 +13,49 @@ class InterviewBot:
             print(f"Current working directory: {current_dir}")
             print(f"Current file location: {os.path.abspath(__file__)}")
             
+            # Initialize default questions that will always be available
+            self.default_questions = {
+                "0-2": [
+                    {
+                        "question": "What are the basic Selenium locators you use?",
+                        "answer": "Basic Selenium locators include:\n1. ID\n2. Name\n3. Class Name\n4. Tag Name\n5. Link Text\n6. Partial Link Text\n7. CSS Selector\n8. XPath",
+                        "category": "Selenium",
+                        "difficulty": "Basic",
+                        "type": "Technical"
+                    },
+                    {
+                        "question": "How do you handle dynamic elements in Selenium?",
+                        "answer": "To handle dynamic elements:\n1. Use explicit waits\n2. Implement proper synchronization\n3. Use dynamic locators\n4. Handle StaleElementException\n5. Implement retry mechanisms",
+                        "category": "Selenium",
+                        "difficulty": "Basic",
+                        "type": "Technical"
+                    },
+                    {
+                        "question": "Explain different types of waits in Selenium",
+                        "answer": "Different types of waits:\n1. Implicit Wait\n2. Explicit Wait\n3. Fluent Wait\n4. PageLoadTimeout\n5. Custom wait conditions",
+                        "category": "Selenium",
+                        "difficulty": "Basic",
+                        "type": "Technical"
+                    }
+                ],
+                "2-5": [
+                    {
+                        "question": "How do you implement Page Object Model?",
+                        "answer": "Implementing POM:\n1. Create separate class for each page\n2. Define elements as private variables\n3. Create public methods for actions\n4. Use proper encapsulation\n5. Implement reusable methods",
+                        "category": "Selenium",
+                        "difficulty": "Basic",
+                        "type": "Technical"
+                    },
+                    {
+                        "question": "How do you handle iframes in Selenium?",
+                        "answer": "Handling iframes:\n1. Switch to frame using ID/Name\n2. Switch using index\n3. Switch using WebElement\n4. Return to default content\n5. Handle nested frames",
+                        "category": "Selenium",
+                        "difficulty": "Basic",
+                        "type": "Technical"
+                    }
+                ]
+            }
+            
             # Initialize with default questions
             self.default_questions = {
                 "0-2": [
@@ -115,6 +158,54 @@ class InterviewBot:
         """Get relevant interview questions based on company and experience"""
         print(f"Getting questions for {company}, exp: {years_of_experience}, category: {category}, difficulty: {difficulty}")
         try:
+            # Start with default questions
+            exp_range = self.get_experience_range(years_of_experience)
+            questions = self.default_questions.get(exp_range, [])
+            
+            # Add company-specific questions if they exist
+            if company in self.questions_db.get("companies", {}):
+                company_questions = self.questions_db["companies"][company].get(exp_range, [])
+                questions.extend(company_questions)
+            
+            # Get web search results
+            from .web_search import search_interview_questions
+            web_results = search_interview_questions(company)
+            for q in web_results:
+                q["experience_range"] = exp_range
+                questions.append(q)
+            
+            # Ensure all questions have proper metadata
+            for q in questions:
+                if not q.get("category"):
+                    q["category"] = "Selenium"
+                if not q.get("difficulty"):
+                    q["difficulty"] = "Basic"
+                if not q.get("type"):
+                    q["type"] = "Technical"
+                q["experience_range"] = exp_range
+            
+            # Apply filters if specified
+            if category and category != "All":
+                filtered = [q for q in questions if q.get("category") == category]
+                if filtered:
+                    questions = filtered
+            
+            if difficulty and difficulty != "All":
+                filtered = [q for q in questions if q.get("difficulty") == difficulty]
+                if filtered:
+                    questions = filtered
+            
+            # Ensure we always return something
+            if not questions:
+                questions = self.default_questions.get(exp_range, [])
+            
+            print(f"Returning {len(questions)} questions")
+            return {
+                "status": "success",
+                "company": company,
+                "experience_range": exp_range,
+                "questions": questions
+            }
             # Always start with default questions
             exp_range = self.get_experience_range(years_of_experience)
             questions = self.default_questions.get(exp_range, [])
