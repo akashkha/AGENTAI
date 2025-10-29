@@ -1,5 +1,13 @@
 import streamlit as st
-from interview_bot import InterviewBot
+import os
+import sys
+
+# Add the project root to the Python path
+project_root = os.path.dirname(os.path.abspath(__file__))
+if project_root not in sys.path:
+    sys.path.append(project_root)
+
+from interview_bot.interview_bot import InterviewBot
 
 # Initialize session state
 def init_session_state():

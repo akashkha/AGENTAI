@@ -1,14 +1,19 @@
 import json
 import os
 from datetime import datetime
-try:
-    from .string_matcher import find_closest_match
-    from .question_aggregator import QuestionAggregator
-    from .search_engine import SearchEngine
-except ImportError:
-    from string_matcher import find_closest_match
-    from question_aggregator import QuestionAggregator
-    from search_engine import SearchEngine
+import os
+import sys
+import json
+from datetime import datetime
+
+# Add the current directory to Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+
+from string_matcher import find_closest_match
+from question_aggregator import QuestionAggregator
+from search_engine import SearchEngine
 
 class InterviewBot:
     def __init__(self):

@@ -1,6 +1,5 @@
-from .interview_bot import InterviewBot
-from .chat_interface import ChatBot
-from .question_aggregator import QuestionAggregator
-from .string_matcher import find_closest_match
+# Version
+__version__ = '1.0.0'
 
-__all__ = ['InterviewBot', 'ChatBot', 'QuestionAggregator', 'find_closest_match']
+# Import core functionality
+from .interview_bot import InterviewBot  # noqa: F401
