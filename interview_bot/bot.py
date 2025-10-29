@@ -103,19 +103,35 @@ class InterviewBot:
             if company in (self.questions_db.get("companies") or {}):
                 questions = self.questions_db.get("companies", {}).get(company, {}).get(exp_range, [])
             else:
-            # Search across all companies for relevant questions
-            company_lower = company.lower()
-            for comp, data in self.questions_db.get("companies", {}).items():
-                exp_questions = data.get(exp_range, [])
-                for q in exp_questions:
-                    # Check question text and answer for relevance
-                    if (company_lower in q.get('question', '').lower() or 
-                        company_lower in q.get('answer', '').lower()):
-                        q_copy = q.copy()
-                        q_copy['original_company'] = comp
-                        questions.append(q_copy)
+                # Search across all companies for relevant questions
+                company_lower = company.lower()
+                for comp, data in self.questions_db.get("companies", {}).items():
+                    exp_questions = data.get(exp_range, [])
+                    for q in exp_questions:
+                        # Check question text and answer for relevance
+                        if (company_lower in q.get('question', '').lower() or 
+                            company_lower in q.get('answer', '').lower()):
+                            q_copy = q.copy()
+                            q_copy['original_company'] = comp
+                            questions.append(q_copy)
             
-            # If few or no results, search online
+            # If we have few or no results, search online
+            if not questions or len(questions) < 3:
+                web_results = search_interview_questions(company)
+                # Add web results to questions list
+                for q in web_results:
+                    q['experience_range'] = exp_range
+                    questions.append(q)
+            
+            # Apply filters to all questions
+            if category and category != "All":
+                questions = [q for q in questions if q.get('category') == category]
+            if difficulty and difficulty != "All":
+                questions = [q for q in questions if q.get('difficulty') == difficulty]
+            
+            # If we have few or no results, search online
+            if not questions or len(questions) < 3:
+                web_results = search_interview_questions(company)            # If few or no results, search online
             if len(questions) < 3:
                 web_results = search_interview_questions(company)
                 for result in web_results:
