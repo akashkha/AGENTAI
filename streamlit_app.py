@@ -183,12 +183,12 @@ with col1:
     if search_or_select == "Select from list":
         # Enhanced company selection
         def format_company(company):
-        total_questions = 0
-        # Count questions for all experience levels
-        for exp in ["0-2", "2-5"]:
-            questions = st.session_state.bot.get_interview_questions(company, exp)
-            total_questions += len(questions) if questions else 0
-        return f"{company} • {total_questions} Q's"
+            total_questions = 0
+            # Count questions for all experience levels
+            for exp in ["0-2", "2-5"]:
+                questions = st.session_state.bot.get_interview_questions(company, exp)
+                total_questions += len(questions) if questions else 0
+            return f"{company} • {total_questions} Q's"
 
         selected_company = st.selectbox(
             "Select Company",
