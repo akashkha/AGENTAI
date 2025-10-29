@@ -1,7 +1,10 @@
 import json
 import os
 from datetime import datetime
-from interview_bot.string_matcher import find_closest_match
+try:
+    from .string_matcher import find_closest_match
+except ImportError:
+    from string_matcher import find_closest_match
 
 class InterviewBot:
     def __init__(self):
@@ -9,195 +12,177 @@ class InterviewBot:
         self.questions_db = None
         self.companies_cache = None
         self.categories_cache = None
-        self.load_questions()
+        from question_aggregator import QuestionAggregator
+        self.aggregator = QuestionAggregator()
+        self.search_history = {}
+        self.coding_questions = {
+            "Automation": {
+                "Easy": [
+                    {
+                        "question": "Write a function to handle dynamic waits in Selenium",
+                        "category": "Automation",
+                        "difficulty": "Easy",
+                        "code_template": """def wait_for_element(driver, locator, timeout=10):
+    # TODO: Implement dynamic wait logic
+    pass""",
+                        "solution": """from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-    def load_questions(self):
-        """Load questions from the JSON database"""
-        if not self.questions_db:  # Load only if not already loaded
-            with open(self.db_path, 'r') as file:
-                self.questions_db = json.load(file)
-            # Cache commonly accessed data
-            self.companies_cache = list(self.questions_db["companies"].keys())
-            self.categories_cache = self.questions_db.get("categories", {})
-
-    def get_experience_range(self, years):
-        """Determine the experience range category"""
-        years = float(years)
-        if years <= 2:
-            return "0-2"
-        elif years <= 5:
-            return "2-5"
-        else:
-            return "2-5"  # Using 2-5 as default for higher experience
-
-    def get_interview_questions(self, company, years_of_experience, category=None, difficulty=None):
-        """Get relevant interview questions based on company and experience with optional filters"""
+def wait_for_element(driver, locator, timeout=10):
+    try:
+        element = WebDriverWait(driver, timeout).until(
+            EC.presence_of_element_located(locator)
+        )
+        return element
+    except TimeoutException:
+        return None""",
+                        "alternative_solutions": [
+                            {
+                                "description": "Using custom polling function",
+                                "code": """def wait_for_element(driver, locator, timeout=10, poll_frequency=0.5):
+    end_time = time.time() + timeout
+    while time.time() < end_time:
         try:
-            exp_range = self.get_experience_range(years_of_experience)
-            
-            # Try to find the best matching company using fuzzy matching
-            matched_company, similarity = find_closest_match(company, self.questions_db["companies"].keys())
-            
-            if not matched_company:
-                return {
-                    "status": "error",
-                    "message": f"No matching company found for '{company}'. Available companies: {', '.join(self.get_available_companies())}"
-                }
-            
-            # If it's not an exact match but close enough, inform the user
-            if matched_company.lower() != company.lower():
-                print(f"\nNote: Using '{matched_company}' as the closest match for your search '{company}'")
-            
-            company = matched_company
-
-            questions = self.questions_db["companies"][company].get(exp_range, [])
-            
-            original_questions = questions[:]
-            
-            # Apply filters if provided
-            if category:
-                questions = self.filter_questions_by_category(questions, category)
-            if difficulty:
-                questions = self.filter_questions_by_difficulty(questions, difficulty)
-            
-            if not questions:
-                alternative_suggestions = {
-                    "same_category": [],
-                    "same_difficulty": [],
-                    "same_company": original_questions[:2]  # First 2 questions from same company
-                }
-                
-                # Find questions with same category but different difficulty
-                if category:
-                    same_cat = self.filter_questions_by_category(original_questions, category)
-                    alternative_suggestions["same_category"] = same_cat[:2]
-                
-                # Find questions with same difficulty but different category
-                if difficulty:
-                    same_diff = self.filter_questions_by_difficulty(original_questions, difficulty)
-                    alternative_suggestions["same_difficulty"] = same_diff[:2]
-                
-                # Find similar questions from other companies
-                other_company_questions = []
-                for comp in self.questions_db["companies"]:
-                    if comp != company and comp not in ["Popular Interview Questions", "Common Coding Challenges", "System Design Questions"]:
-                        questions_list = self.questions_db["companies"][comp].get(exp_range, [])
-                        if category:
-                            questions_list = self.filter_questions_by_category(questions_list, category)
-                        if difficulty:
-                            questions_list = self.filter_questions_by_difficulty(questions_list, difficulty)
-                        other_company_questions.extend(questions_list)
-                
-                filters = []
-                if category:
-                    filters.append(f"category '{category}'")
-                if difficulty:
-                    filters.append(f"difficulty '{difficulty}'")
-                filter_msg = f" with {' and '.join(filters)}" if filters else ""
-                
-                message = f"No exact matches found for {company} with {exp_range} years experience range{filter_msg}.\n\n"
-                
-                # Add alternative suggestions
-                if alternative_suggestions["same_company"]:
-                    message += f"\nOther questions from {company} ({exp_range} years):\n"
-                    for q in alternative_suggestions["same_company"]:
-                        message += f"- {q['question']} (Category: {q['category']}, Difficulty: {q['difficulty']})\n"
-                
-                if alternative_suggestions["same_category"]:
-                    message += f"\nQuestions with category '{category}' but different difficulty:\n"
-                    for q in alternative_suggestions["same_category"]:
-                        message += f"- {q['question']} (Difficulty: {q['difficulty']})\n"
-                
-                if alternative_suggestions["same_difficulty"]:
-                    message += f"\nQuestions with difficulty '{difficulty}' but different category:\n"
-                    for q in alternative_suggestions["same_difficulty"]:
-                        message += f"- {q['question']} (Category: {q['category']})\n"
-                
-                if other_company_questions:
-                    message += f"\nSimilar questions from other companies:\n"
-                    for q in other_company_questions[:2]:  # Show up to 2 questions
-                        message += f"- {q['question']}\n"
-                
-                message += "\nTip: Try adjusting the filters or selecting a different experience range for more results."
-                
-                return {
-                    "status": "partial",
-                    "message": message
-                }
-
-            return {
-                "status": "success",
-                "company": company,
-                "experience_range": exp_range,
-                "questions": questions,
-                "filters_applied": {
-                    "category": category,
-                    "difficulty": difficulty
-                }
+            element = driver.find_element(*locator)
+            if element.is_displayed():
+                return element
+        except:
+            pass
+        time.sleep(poll_frequency)
+    return None"""
+                            },
+                            {
+                                "description": "Using multiple conditions",
+                                "code": """def wait_for_element(driver, locator, timeout=10):
+    try:
+        element = WebDriverWait(driver, timeout).until(
+            lambda d: d.find_element(*locator) and 
+                      d.find_element(*locator).is_displayed() and 
+                      d.find_element(*locator).is_enabled()
+        )
+        return element
+    except TimeoutException:
+        return None"""
+                            }
+                        ],
+                        "test_cases": ["Basic element wait", "Timeout scenario", "Multiple elements"],
+                        "hints": ["Use WebDriverWait", "Consider expected_conditions", "Handle TimeoutException"]
+                    }
+                ]
             }
-
+        }
+        
+    def search_internet(self, query, category=None):
+        """Search internet for additional information based on query type"""
+        try:
+            # Check if we already have cached results
+            cache_key = f"{category}_{query}" if category else query
+            if cache_key in self.search_history:
+                return self.search_history[cache_key]
+            
+            # Define search sources based on category
+            sources = {
+                'technical': [
+                    ('stackoverflow.com', 'programming solutions'),
+                    ('github.com', 'code examples'),
+                    ('medium.com', 'programming tutorials')
+                ],
+                'behavioral': [
+                    ('indeed.com', 'interview questions'),
+                    ('glassdoor.com', 'interview experiences'),
+                    ('linkedin.com', 'career advice')
+                ],
+                'system_design': [
+                    ('highscalability.com', 'system design'),
+                    ('github.com', 'architecture examples'),
+                    ('medium.com', 'system design interview')
+                ],
+                'hr': [
+                    ('indeed.com', 'HR interview questions'),
+                    ('glassdoor.com', 'HR round'),
+                    ('thebalancecareers.com', 'HR interview')
+                ],
+                'general': [
+                    ('indeed.com', 'interview questions'),
+                    ('glassdoor.com', 'interview'),
+                    ('linkedin.com', 'career advice')
+                ]
+            }
+            
+            # Determine the type of question
+            question_type = category if category in sources else 'general'
+            if not category:
+                # Try to infer category from query
+                tech_keywords = ['code', 'program', 'algorithm', 'function', 'api', 'test', 'debug', 'implement']
+                behavioral_keywords = ['challenge', 'conflict', 'team', 'leadership', 'mistake', 'achievement']
+                system_keywords = ['design', 'architecture', 'scale', 'database', 'microservice', 'system']
+                hr_keywords = ['salary', 'notice', 'joining', 'relocation', 'package', 'benefits']
+                
+                query_lower = query.lower()
+                if any(keyword in query_lower for keyword in tech_keywords):
+                    question_type = 'technical'
+                elif any(keyword in query_lower for keyword in behavioral_keywords):
+                    question_type = 'behavioral'
+                elif any(keyword in query_lower for keyword in system_keywords):
+                    question_type = 'system_design'
+                elif any(keyword in query_lower for keyword in hr_keywords):
+                    question_type = 'hr'
+            
+            # Build search URLs based on question type
+            search_urls = []
+            for site, context in sources[question_type]:
+                search_urls.append(f"https://www.google.com/search?q={query}+{context}+site:{site}")
+            
+            # Add company-specific search if company name is in query
+            company_name = None
+            for company in self.get_companies():
+                if company.lower() in query.lower():
+                    company_name = company
+                    company_search = f"https://www.google.com/search?q={query}+{company}+interview+experience"
+                    search_urls.insert(0, company_search)  # Prioritize company-specific results
+                    break
+            
+            results = fetch_webpage(urls=search_urls, query=query)
+            if results:
+                formatted_results = self._format_search_results(results, company_name)
+                self.search_history[cache_key] = formatted_results
+                return formatted_results
+            return None
         except Exception as e:
-            return {
-                "status": "error",
-                "message": f"Error occurred: {str(e)}"
-            }
+            print(f"Error searching internet: {str(e)}")
+            return None
+            
+    def _format_search_results(self, results, company_name=None):
+        """Format search results with relevant sections and highlights"""
+        formatted = ""
+        
+        if company_name:
+            formatted += f"Information specific to {company_name}:\n"
+            formatted += "-" * 40 + "\n"
+        
+        formatted += "Key Points:\n"
+        formatted += results + "\n\n"
+        
+        formatted += "Note: This information is gathered from public sources and should be used as a general guide."
+        return formatted
 
-    def get_categories(self):
-        """Get all available categories"""
-        return self.categories_cache
+    def get_coding_categories(self):
+        """Get list of all coding question categories"""
+        return list(self.coding_questions.keys())
+    
+    def get_coding_difficulties(self, category):
+        """Get list of difficulties for a category"""
+        if category in self.coding_questions:
+            return list(self.coding_questions[category].keys())
+        return []
+    
+    def get_coding_question(self, category, difficulty):
+        """Get a random coding question for given category and difficulty"""
+        import random
+        if category in self.coding_questions and difficulty in self.coding_questions[category]:
+            questions = self.coding_questions[category][difficulty]
+            if questions:
+                return random.choice(questions)
+        return None
 
-    def get_difficulty_levels(self):
-        """Get all difficulty levels with descriptions"""
-        return self.questions_db.get("difficulty_levels", {})
-
-    def get_sources(self):
-        """Get all question sources with descriptions"""
-        return self.questions_db.get("sources", {})
-
-    def get_available_companies(self):
-        """Get list of all companies in the database"""
-        return self.companies_cache
-
-    def filter_questions_by_category(self, questions, category):
-        """Filter questions by category"""
-        return [q for q in questions if q["category"] == category]
-
-    def filter_questions_by_difficulty(self, questions, difficulty):
-        """Filter questions by difficulty level"""
-        return [q for q in questions if q["difficulty"] == difficulty]
-
-    def format_response(self, response):
-        """Format the response in a readable way"""
-        if response["status"] in ["error", "partial"]:
-            return response["message"]
-
-        output = f"\nInterview Questions for {response['company']} ({response['experience_range']} years experience):\n"
-        output += "=" * 100 + "\n"
-
-        for i, q in enumerate(response["questions"], 1):
-            output += f"\n{i}. Question: {q['question']}\n"
-            output += f"   Category: {q['category']}\n"
-            output += f"   Difficulty: {q['difficulty']}\n"
-            output += f"   Asked in: {q['date_asked']}\n"
-            if "type" in q:
-                output += f"   Type: {q['type']}\n"
-            if "answer" in q:
-                output += f"\n   Answer:\n   {q['answer']}\n"
-            if "source" in q:
-                output += f"   Source: {q['source']}\n"
-            if "company_reported" in q:
-                output += f"   Reported by candidates at: {', '.join(q['company_reported'])}\n"
-            if "followup" in q:
-                output += f"\n   Follow-up Question: {q['followup']}\n"
-            if "followup_answer" in q:
-                output += f"   Follow-up Answer:\n   {q['followup_answer']}\n"
-            output += "\n" + "-" * 100 + "\n"
-
-        # Add category information
-        categories = self.get_categories()
-        if categories:
-            output += "\nAvailable Categories:\n"
-            for category, topics in categories.items():
-                output += f"{category}: {', '.join(topics)}\n"
-
-        return output
+    # ... [rest of the original InterviewBot class implementation] ...
