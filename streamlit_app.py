@@ -121,10 +121,19 @@ st.title("🤖 Interview Preparation Assistant")
 if 'bot' not in st.session_state:
     st.session_state.bot = InterviewBot()
 
+# Initialize session data
 if 'companies' not in st.session_state:
     st.session_state.companies = st.session_state.bot.get_available_companies()
+    
+# Get all unique categories including subcategories
 if 'categories' not in st.session_state:
-    st.session_state.categories = ["All"] + list(st.session_state.bot.get_categories().keys())
+    categories = st.session_state.bot.get_categories()
+    all_categories = set()
+    for main_category, subcategories in categories.items():
+        all_categories.add(main_category)
+        all_categories.update(subcategories)
+    st.session_state.categories = ["All"] + sorted(list(all_categories))
+    
 if 'difficulty_levels' not in st.session_state:
     st.session_state.difficulty_levels = ["All"] + st.session_state.bot.get_difficulty_levels()
 
@@ -223,9 +232,7 @@ with st.form(key="chat_form", clear_on_submit=True):
     with col1:
         submit_button = st.form_submit_button("Send")
     with col2:
-        if st.form_submit_button("Clear Chat"):
-            st.session_state.messages = []
-            st.rerun()
+        clear_chat = st.form_submit_button("Clear Chat")
     
     if submit_button and user_input:
         # Add user message to chat history
@@ -235,36 +242,9 @@ with st.form(key="chat_form", clear_on_submit=True):
         bot_response = process_message(user_input)
         st.session_state.messages.append({"role": "assistant", "content": bot_response})
         st.rerun()
-
-# Main chat interface
-if st.session_state.bot_mode == 'Chat':
-    # Initialize the chat message if it doesn't exist
-    if "chat_input" not in st.session_state:
-        st.session_state.chat_input = ""
-    
-    # Add a form for better input handling
-    with st.form(key="chat_form", clear_on_submit=True):
-        user_input = st.text_input("Type your message here...")
-        submit_button = st.form_submit_button("Send")
-        
-        if submit_button and user_input:
-            # Add user message to chat history
-            st.session_state.messages.append({"role": "user", "content": user_input})
-            
-            # Get bot response
-            bot_response = process_message(user_input)
-            st.session_state.messages.append({"role": "assistant", "content": bot_response})
-            
-            # Force a rerun to update the chat
-            st.rerun()
-
-# Display categories
-elif st.session_state.bot_mode == 'View Categories':
-    categories = st.session_state.bot.get_categories()
-    for category, topics in categories.items():
-        with st.expander(f"{category} Topics"):
-            for topic in topics:
-                st.write(f"- {topic}")
+    elif clear_chat:
+        st.session_state.messages = []
+        st.rerun()
 
 # Display chat history
 for message in st.session_state.messages:
@@ -272,8 +252,3 @@ for message in st.session_state.messages:
         st.markdown(f'<div class="user-message">{message["content"]}</div>', unsafe_allow_html=True)
     else:
         st.markdown(f'<div class="bot-message">{message["content"]}</div>', unsafe_allow_html=True)
-
-# Clear chat button
-if st.button("Clear Chat"):
-    st.session_state.messages = []
-    st.rerun()

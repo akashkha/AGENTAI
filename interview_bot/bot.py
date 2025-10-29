@@ -87,6 +87,28 @@ class InterviewBot:
         """Get list of available difficulty levels"""
         return self.difficulty_levels
 
+    def search_questions(self, query):
+        """Search for questions across all companies and categories"""
+        query = query.lower()
+        results = []
+        
+        # Search through all companies and their questions
+        for company, exp_ranges in self.questions_db.get('companies', {}).items():
+            for exp_range, questions in exp_ranges.items():
+                for question in questions:
+                    # Search in question text
+                    if query in question.get('question', '').lower():
+                        results.append({
+                            'company': company,
+                            'experience': exp_range,
+                            'category': question.get('category', 'General'),
+                            'difficulty': question.get('difficulty', 'Medium'),
+                            'question': question.get('question'),
+                            'answer': question.get('answer', '')
+                        })
+        
+        return results
+
     def format_response(self, response):
         """Format the response in a readable way"""
         if response.get("status") in ["error", "partial"]:
