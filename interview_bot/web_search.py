@@ -9,10 +9,17 @@ def search_interview_questions(company_name, role="automation tester"):
     # Initialize with mandatory basic questions
     questions = [
         {
+            "question": f"How would you approach testing {company_name}'s web applications using Selenium?",
+            "answer": "Testing approach:\n1. Understand business requirements\n2. Create test plan\n3. Implement page objects\n4. Set up test data\n5. Write test scripts\n6. Handle dynamic elements\n7. Implement reporting",
+            "category": "Selenium",
+            "difficulty": "Medium",
+            "type": "Technical"
+        },
+        {
             "question": "Explain how to handle dynamic web elements in Selenium",
             "answer": "To handle dynamic elements:\n1. Use explicit waits\n2. Implement proper synchronization\n3. Use dynamic XPath/CSS selectors\n4. Handle StaleElementException\n5. Implement retry mechanisms",
             "category": "Selenium",
-            "difficulty": "Basic",
+            "difficulty": "Medium",
             "type": "Technical"
         },
         {
@@ -62,12 +69,11 @@ def search_interview_questions(company_name, role="automation tester"):
         
         # Industry-specific keywords to enhance question relevance
         industry_keywords = {
-            'amdocs': ['telecom', 'billing', 'BSS', 'OSS', 'CRM'],
-            'default': ['web', 'mobile', 'api', 'database']
+            'default': ['web', 'mobile', 'api', 'database', 'automation', 'testing']
         }
         
-        # Get relevant keywords for the company
-        keywords = industry_keywords.get(company_name.lower(), industry_keywords['default'])
+        # Use default keywords for all companies
+        keywords = industry_keywords['default']
         
         # Generate relevant questions for any company
         common_questions = [
@@ -116,8 +122,7 @@ def search_interview_questions(company_name, role="automation tester"):
                 "answer": "Mobile testing focus areas:\n1. User interface and experience\n2. Device compatibility\n3. Network conditions\n4. Performance metrics\n5. Security aspects\n6. Battery consumption\n7. Integration points",
                 "category": "Mobile Testing",
                 "type": "Technical"
-            }
-        ] + [
+            },
             {
                 "question": "What are the key components of your automation framework?",
                 "answer": "Key components typically include:\n1. Test Management\n2. Page Objects\n3. Test Data Management\n4. Reporting\n5. Configuration Management\n6. Utilities and Helpers\n7. CI/CD Integration",
@@ -136,7 +141,7 @@ def search_interview_questions(company_name, role="automation tester"):
                 "category": "API Testing",
                 "type": "Technical"
             }
-        ])
+        ]
         
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -158,26 +163,81 @@ def search_interview_questions(company_name, role="automation tester"):
             questions.append(question)
 
         # Try to fetch real questions from online sources
-        sources = [
-            f"https://www.glassdoor.com/Interview/{company_name}-Interview-Questions-E",
-            f"https://www.ambitionbox.com/{company_name.lower()}-interview-questions",
-            f"https://www.geeksforgeeks.org/tag/{company_name}-interview-experience/",
-            f"https://www.interviewbit.com/companies/{company_name.lower()}-interview-questions/",
-            f"https://www.naukri.com/blog/{company_name.lower()}-interview-questions/",
-            f"https://www.linkedin.com/pulse/tags/{company_name.lower()}-interview-questions"
-        ]
-
-        for url in sources:
+        def scrape_glassdoor(company):
+            base_url = f"https://www.glassdoor.com/Interview/{company}-Interview-Questions-E"
+            questions = []
             try:
-                response = requests.get(url, headers=headers, timeout=10)
+                response = requests.get(base_url, headers=headers, timeout=10)
                 if response.ok:
                     soup = BeautifulSoup(response.text, 'html.parser')
-                    # Extract questions if found (source-specific parsing)
-                    # For now, we'll rely on the template questions
-                    time.sleep(1)  # Be nice to servers
+                    # Find interview question containers
+                    question_elements = soup.find_all('div', {'class': 'questionText'})
+                    for element in question_elements:
+                        question_text = element.get_text(strip=True)
+                        if 'selenium' in question_text.lower() or 'automation' in question_text.lower():
+                            questions.append({
+                                "question": question_text,
+                                "source": "Glassdoor",
+                                "company": company,
+                                "category": "Selenium",
+                                "difficulty": "Medium",
+                                "type": "Technical"
+                            })
             except Exception as e:
-                print(f"Error fetching from {url}: {str(e)}")
-                continue
+                print(f"Error scraping Glassdoor: {str(e)}")
+            return questions
+
+        def scrape_geeksforgeeks(company):
+            base_url = f"https://www.geeksforgeeks.org/tag/{company}-interview-experience/"
+            questions = []
+            try:
+                response = requests.get(base_url, headers=headers, timeout=10)
+                if response.ok:
+                    soup = BeautifulSoup(response.text, 'html.parser')
+                    # Find technical question sections
+                    content = soup.find_all('div', {'class': 'entry-content'})
+                    for section in content:
+                        question_blocks = section.find_all(['h3', 'strong'])
+                        for block in question_blocks:
+                            text = block.get_text(strip=True)
+                            if any(keyword in text.lower() for keyword in ['selenium', 'automation', 'testing']):
+                                questions.append({
+                                    "question": text,
+                                    "source": "GeeksforGeeks",
+                                    "company": company,
+                                    "category": "Selenium",
+                                    "difficulty": "Medium",
+                                    "type": "Technical"
+                                })
+            except Exception as e:
+                print(f"Error scraping GeeksforGeeks: {str(e)}")
+            return questions
+
+        # Get real questions from multiple sources
+        real_questions = []
+        
+        # Try Glassdoor
+        glassdoor_questions = scrape_glassdoor(company_name)
+        if glassdoor_questions:
+            real_questions.extend(glassdoor_questions)
+            print(f"Found {len(glassdoor_questions)} questions from Glassdoor")
+
+        # Try GeeksforGeeks
+        geeksforgeeks_questions = scrape_geeksforgeeks(company_name)
+        if geeksforgeeks_questions:
+            real_questions.extend(geeksforgeeks_questions)
+            print(f"Found {len(geeksforgeeks_questions)} questions from GeeksforGeeks")
+
+        # Add real questions to results if found
+        if real_questions:
+            print(f"Adding {len(real_questions)} real questions from online sources")
+            questions.extend(real_questions)
+        else:
+            print("No real questions found from online sources, using enhanced templates")
+            # If no real questions found, use enhanced templates but mark them clearly
+            for q in questions:
+                q["source"] = "Template (No real questions found)"
+
 
         return questions
     except Exception as e:

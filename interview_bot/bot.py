@@ -158,21 +158,30 @@ class InterviewBot:
         """Get relevant interview questions based on company and experience"""
         print(f"Getting questions for {company}, exp: {years_of_experience}, category: {category}, difficulty: {difficulty}")
         try:
-            # Start with default questions
-            exp_range = self.get_experience_range(years_of_experience)
-            questions = self.default_questions.get(exp_range, [])
+            if not company or not isinstance(company, str):
+                return {"status": "error", "message": "Please provide a valid company name."}
             
-            # Add company-specific questions if they exist
+            print("Debug: Starting question retrieval...")
+            
+            company = company.strip()
+            exp_range = self.get_experience_range(years_of_experience)
+            questions = []
+            
+            # Start with default questions for the experience range
+            questions.extend(self.default_questions.get(exp_range, []))
+            
+            # Get company-specific questions if they exist
             if company in self.questions_db.get("companies", {}):
                 company_questions = self.questions_db["companies"][company].get(exp_range, [])
                 questions.extend(company_questions)
             
-            # Get web search results
-            from .web_search import search_interview_questions
+            # Get web search results with company-specific questions
             web_results = search_interview_questions(company)
             for q in web_results:
                 q["experience_range"] = exp_range
-                questions.append(q)
+                # Ensure the question is relevant to the company
+                if company.lower() in q.get("question", "").lower():
+                    questions.append(q)
             
             # Ensure all questions have proper metadata
             for q in questions:
@@ -184,144 +193,47 @@ class InterviewBot:
                     q["type"] = "Technical"
                 q["experience_range"] = exp_range
             
+            # Keep track of original questions before filtering
+            all_questions = questions.copy()
+            
             # Apply filters if specified
+            print(f"Debug: Before filtering - {len(questions)} questions")
+            
             if category and category != "All":
-                filtered = [q for q in questions if q.get("category") == category]
+                filtered = [q for q in questions if q.get("category", "Selenium") == category]
+                print(f"Debug: After category filter - {len(filtered)} questions")
                 if filtered:
                     questions = filtered
             
             if difficulty and difficulty != "All":
-                filtered = [q for q in questions if q.get("difficulty") == difficulty]
+                filtered = [q for q in questions if q.get("difficulty", "Medium") == difficulty]
+                print(f"Debug: After difficulty filter - {len(filtered)} questions")
                 if filtered:
                     questions = filtered
             
-            # Ensure we always return something
+            # If no questions match filters, return the original set
             if not questions:
-                questions = self.default_questions.get(exp_range, [])
+                print("Debug: No questions after filtering, restoring original set")
+                questions = all_questions
             
-            print(f"Returning {len(questions)} questions")
-            return {
-                "status": "success",
-                "company": company,
-                "experience_range": exp_range,
-                "questions": questions
-            }
-            # Always start with default questions
-            exp_range = self.get_experience_range(years_of_experience)
-            questions = self.default_questions.get(exp_range, [])
-            
-            # Add web search results
-            web_results = search_interview_questions(company)
-            questions.extend(web_results)
-            
-            # Ensure all questions have proper metadata
-            for q in questions:
-                if not q.get('category'):
-                    q['category'] = 'Selenium'
-                if not q.get('difficulty'):
-                    q['difficulty'] = 'Basic'
-                if not q.get('type'):
-                    q['type'] = 'Technical'
-                q['experience_range'] = exp_range
-            
-            # Apply filters if specified
-            if category and category != 'All':
-                filtered = [q for q in questions if q.get('category') == category]
-                if filtered:
-                    questions = filtered
-            
-            if difficulty and difficulty != 'All':
-                filtered = [q for q in questions if q.get('difficulty') == difficulty]
-                if filtered:
-                    questions = filtered
-            
-            print(f"Returning {len(questions)} questions")
-            return {
-                "status": "success",
-                "company": company,
-                "experience_range": exp_range,
-                "questions": questions
-            }
-            if not company or not isinstance(company, str):
-                return {"status": "error", "message": "Please provide a valid company name."}
-            
-            company = company.strip()
-            exp_range = self.get_experience_range(years_of_experience)
-            questions = []
-            
-            # Check if exact company match exists
-            if company in (self.questions_db.get("companies") or {}):
-                questions = self.questions_db.get("companies", {}).get(company, {}).get(exp_range, [])
-            else:
-                # Search across all companies for relevant questions
-                company_lower = company.lower()
-                for comp, data in self.questions_db.get("companies", {}).items():
-                    exp_questions = data.get(exp_range, [])
-                    for q in exp_questions:
-                        # Check question text and answer for relevance
-                        if (company_lower in q.get('question', '').lower() or 
-                            company_lower in q.get('answer', '').lower()):
-                            q_copy = q.copy()
-                            q_copy['original_company'] = comp
-                            questions.append(q_copy)
-            
-            # Always get web results to ensure comprehensive coverage
-            web_results = search_interview_questions(company)
-            for q in web_results:
-                q['experience_range'] = exp_range
-                questions.append(q)
-            
-            # Ensure questions are unique and relevant
+            # Ensure questions are unique
             seen = set()
             unique_questions = []
             for q in questions:
-                q_text = q.get('question', '')
+                q_text = q.get("question", "")
                 if q_text not in seen:
                     seen.add(q_text)
                     unique_questions.append(q)
             questions = unique_questions
             
-            # Ensure all questions have category and difficulty
-            for q in questions:
-                q['category'] = q.get('category', 'Selenium')
-                q['difficulty'] = q.get('difficulty', 'Basic')
-                q['experience_range'] = exp_range
-            
-            # Keep track of original questions
-            all_questions = questions.copy()
-            
-            # Apply filters
-            if category and category != "All":
-                questions = [q for q in questions if q.get('category') == category]
-            
-            if difficulty and difficulty != "All":
-                questions = [q for q in questions if q.get('difficulty') == difficulty]
-            
-            # If no questions match filters, return all questions with default values
-            if not questions:
-                print(f"No questions after filtering. Returning all questions with default values")
-                questions = all_questions
-            
-            # If we have few or no results, search online
-            if not questions or len(questions) < 3:
-                web_results = search_interview_questions(company)            # If few or no results, search online
-            if len(questions) < 3:
-                web_results = search_interview_questions(company)
-                for result in web_results:
-                    result['experience_range'] = exp_range
-                    questions.append(result)            # Apply filters
-            if category:
-                questions = [q for q in questions if q.get("category") == category]
-            
-            if difficulty:
-                questions = [q for q in questions if q.get("difficulty") == difficulty]
-            
+            print(f"Returning {len(questions)} questions")
             return {
                 "status": "success",
                 "company": company,
                 "experience_range": exp_range,
                 "questions": questions
             }
+
         except Exception as e:
             return {"status": "error", "message": f"Error fetching questions: {str(e)}"}
 
