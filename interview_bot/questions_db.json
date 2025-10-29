@@ -7,6 +7,42 @@
     "COMPANY_REPORTS": "Direct company interview reports"
   },
   "companies": {
+    "Lenskart": {
+      "0-2": [
+        {
+          "question": "How would you automate testing of Lenskart's virtual try-on feature?",
+          "category": "Selenium",
+          "difficulty": "Basic",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "Automation approach for virtual try-on:\n1. WebDriver setup with camera permissions\n2. Handle image upload simulation\n3. Verify frame rendering on face\n4. Check UI elements responsiveness\n5. Cross-browser compatibility testing\n6. Mobile view testing",
+          "followup": "How would you handle browser camera permissions?",
+          "followup_answer": "Handle camera permissions:\n1. Use capabilities settings\n2. Automate permission dialogs\n3. Mock camera if needed\n4. Handle different browser behaviors"
+        },
+        {
+          "question": "Explain your approach to testing Lenskart's product filter functionality",
+          "category": "Selenium",
+          "difficulty": "Basic",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "Filter testing approach:\n1. Check all filter combinations\n2. Verify price range filters\n3. Test frame style filters\n4. Validate brand filters\n5. Check filter persistence\n6. Test mobile responsiveness",
+          "followup": "How would you handle dynamic product updates?",
+          "followup_answer": "Handle dynamic updates:\n1. Implement explicit waits\n2. Monitor AJAX calls\n3. Verify product count updates\n4. Check filter state persistence"
+        }
+      ],
+      "2-5": [
+        {
+          "question": "How would you test Lenskart's prescription lens ordering workflow?",
+          "category": "Selenium",
+          "difficulty": "Basic",
+          "date_asked": "2025-10",
+          "type": "Technical",
+          "answer": "Prescription workflow testing:\n1. Validate prescription input fields\n2. Test lens type selection\n3. Verify add-ons selection\n4. Check price calculations\n5. Test order summary\n6. Verify prescription data storage",
+          "followup": "How would you handle complex form validations?",
+          "followup_answer": "Form validation handling:\n1. Test field dependencies\n2. Validate error messages\n3. Check data persistence\n4. Test field calculations"
+        }
+      ]
+    },
     "Google": {
       "0-2": [
         {

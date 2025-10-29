@@ -91,6 +91,7 @@ class InterviewBot:
 
     def get_interview_questions(self, company, years_of_experience, category=None, difficulty=None):
         """Get relevant interview questions based on company and experience"""
+        print(f"Getting questions for {company}, exp: {years_of_experience}, category: {category}, difficulty: {difficulty}")
         try:
             if not company or not isinstance(company, str):
                 return {"status": "error", "message": "Please provide a valid company name."}
@@ -115,19 +116,42 @@ class InterviewBot:
                             q_copy['original_company'] = comp
                             questions.append(q_copy)
             
-            # If we have few or no results, search online
-            if not questions or len(questions) < 3:
-                web_results = search_interview_questions(company)
-                # Add web results to questions list
-                for q in web_results:
-                    q['experience_range'] = exp_range
-                    questions.append(q)
+            # Always get web results to ensure comprehensive coverage
+            web_results = search_interview_questions(company)
+            for q in web_results:
+                q['experience_range'] = exp_range
+                questions.append(q)
             
-            # Apply filters to all questions
+            # Ensure questions are unique and relevant
+            seen = set()
+            unique_questions = []
+            for q in questions:
+                q_text = q.get('question', '')
+                if q_text not in seen:
+                    seen.add(q_text)
+                    unique_questions.append(q)
+            questions = unique_questions
+            
+            # Ensure all questions have category and difficulty
+            for q in questions:
+                q['category'] = q.get('category', 'Selenium')
+                q['difficulty'] = q.get('difficulty', 'Basic')
+                q['experience_range'] = exp_range
+            
+            # Keep track of original questions
+            all_questions = questions.copy()
+            
+            # Apply filters
             if category and category != "All":
                 questions = [q for q in questions if q.get('category') == category]
+            
             if difficulty and difficulty != "All":
                 questions = [q for q in questions if q.get('difficulty') == difficulty]
+            
+            # If no questions match filters, return all questions with default values
+            if not questions:
+                print(f"No questions after filtering. Returning all questions with default values")
+                questions = all_questions
             
             # If we have few or no results, search online
             if not questions or len(questions) < 3:
