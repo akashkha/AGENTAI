@@ -122,7 +122,7 @@ st.markdown("### 🚀 Quick Access")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    companies = st.session_state.bot.get_available_companies()
+    companies = ["TCS", "Infosys", "Wipro", "Microsoft India", "Amazon India", "Mastercard", "Popular Interview Questions"]
     selected_company = st.selectbox("Select Company", companies)
 
 with col2:
