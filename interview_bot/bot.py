@@ -14,17 +14,10 @@ class InterviewBot:
             
             # Look for questions_db.json in the interview_bot package directory
             self.db_path = os.path.join(os.path.dirname(__file__), 'questions_db.json')
-            
-            # Try each path and use the first one that exists
-            for path in possible_paths:
-                print(f"Trying path: {path}")
-                if os.path.exists(path):
-                    print(f"Found database at: {path}")
-                    self.db_path = path
-                    break
-            else:
-                print("No database file found!")
+            if not os.path.exists(self.db_path):
+                print(f"Database not found at: {self.db_path}")
                 raise FileNotFoundError("Could not find questions_db.json")
+            print(f"Found database at: {self.db_path}")
                 
             self.questions_db = None
             self.companies_cache = None

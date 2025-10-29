@@ -122,29 +122,18 @@ st.title("🤖 Interview Preparation Assistant")
 if 'bot' not in st.session_state:
     try:
         st.session_state.bot = InterviewBot()
-        st.success("Bot initialized successfully!")
     except Exception as e:
-        st.error(f"Failed to initialize bot: {str(e)}")
-        st.write("Current directory:", os.getcwd())
-        st.write("Files in current directory:", os.listdir())
-        st.write("Files in interview_bot:", os.listdir("interview_bot") if os.path.exists("interview_bot") else "No interview_bot directory")
+        st.error(f"Failed to initialize bot. Please try refreshing the page.")
         st.stop()
-
-# Debug section
-with st.expander("Debug Information", expanded=True):
-    st.write("Current working directory:", os.getcwd())
-    st.write("Files in current directory:", os.listdir())
-    st.write("Files in interview_bot directory:", os.listdir("interview_bot") if os.path.exists("interview_bot") else "No interview_bot directory")
 
 # Initialize session data
 if 'companies' not in st.session_state:
     try:
         companies = st.session_state.bot.get_available_companies()
         if not companies:
-            st.error("Failed to load companies. Please check debug information.")
+            st.error("Failed to load companies.")
             st.stop()
         st.session_state.companies = companies
-        st.success(f"Loaded {len(companies)} companies!")
     except Exception as e:
         st.error(f"Error loading companies: {str(e)}")
         st.stop()
@@ -161,7 +150,6 @@ if 'categories' not in st.session_state:
             all_categories.add(main_category)
             all_categories.update(subcategories)
         st.session_state.categories = ["All"] + sorted(list(all_categories))
-        st.success(f"Loaded {len(all_categories)} categories!")
     except Exception as e:
         st.error(f"Error loading categories: {str(e)}")
         st.stop()
@@ -173,7 +161,6 @@ if 'difficulty_levels' not in st.session_state:
             st.error("Failed to load difficulty levels. Please check debug information.")
             st.stop()
         st.session_state.difficulty_levels = ["All"] + difficulty_levels
-        st.success(f"Loaded {len(difficulty_levels)} difficulty levels!")
     except Exception as e:
         st.error(f"Error loading difficulty levels: {str(e)}")
         st.stop()
@@ -184,10 +171,12 @@ col1, col2 = st.columns(2)
 col3, col4 = st.columns(2)
 
 with col1:
+    # Enhanced company selection with search
     selected_company = st.selectbox(
         "Select Company",
         st.session_state.companies,
-        help="Choose a company to get interview questions"
+        format_func=lambda x: f"{x} ({len(st.session_state.bot.get_interview_questions(x, 2))} questions)",
+        help="Search or select a company"
     )
 
 with col2:
