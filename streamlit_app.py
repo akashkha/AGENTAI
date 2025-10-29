@@ -167,17 +167,42 @@ if 'difficulty_levels' not in st.session_state:
 
 # Quick Access Section
 st.markdown("### 🚀 Quick Access")
+
+# Company search and selection
+search_or_select = st.radio(
+    "How would you like to find questions?",
+    ["Select from list", "Search any company"],
+    horizontal=True,
+    help="Choose whether to select from existing companies or search across all questions"
+)
+
 col1, col2 = st.columns(2)
 col3, col4 = st.columns(2)
 
 with col1:
-    # Enhanced company selection with search
-    selected_company = st.selectbox(
-        "Select Company",
-        st.session_state.companies,
-        format_func=lambda x: f"{x} ({len(st.session_state.bot.get_interview_questions(x, 2))} questions)",
-        help="Search or select a company"
-    )
+    if search_or_select == "Select from list":
+        # Enhanced company selection
+        def format_company(company):
+        total_questions = 0
+        # Count questions for all experience levels
+        for exp in ["0-2", "2-5"]:
+            questions = st.session_state.bot.get_interview_questions(company, exp)
+            total_questions += len(questions) if questions else 0
+        return f"{company} • {total_questions} Q's"
+
+        selected_company = st.selectbox(
+            "Select Company",
+            st.session_state.companies,
+            format_func=format_company,
+            help="Select a company from the list"
+        )
+    else:
+        # Free text search for companies
+        search_company = st.text_input(
+            "Enter company name",
+            help="Type any company name to search across all questions"
+        )
+        selected_company = search_company if search_company else ""
 
 with col2:
     experience = st.slider(

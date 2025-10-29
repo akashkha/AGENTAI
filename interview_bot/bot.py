@@ -96,12 +96,23 @@ class InterviewBot:
             
             company = company.strip()
             exp_range = self.get_experience_range(years_of_experience)
+            questions = []
             
-            # Use general questions if company not found
-            if company not in (self.questions_db.get("companies") or {}):
-                questions = self.questions_db.get("companies", {}).get("Popular Interview Questions", {}).get(exp_range, [])
-            else:
+            # Check if exact company match exists
+            if company in (self.questions_db.get("companies") or {}):
                 questions = self.questions_db.get("companies", {}).get(company, {}).get(exp_range, [])
+            else:
+                # Search across all companies for relevant questions
+                company_lower = company.lower()
+                for comp, data in self.questions_db.get("companies", {}).items():
+                    exp_questions = data.get(exp_range, [])
+                    for q in exp_questions:
+                        # Check question text and answer for relevance
+                        if (company_lower in q.get('question', '').lower() or 
+                            company_lower in q.get('answer', '').lower()):
+                            q_copy = q.copy()
+                            q_copy['original_company'] = comp
+                            questions.append(q_copy)
             
             # Apply filters
             if category:
@@ -164,10 +175,16 @@ class InterviewBot:
 
         for i, q in enumerate(response.get("questions", []), 1):
             output += f"Question #{i}:\n"
+            if 'original_company' in q:
+                output += f"[Found in {q['original_company']} interviews]\n"
             output += f"Category: {q.get('category', 'General')}\n"
             output += f"Q: {q.get('question')}\n"
             if q.get('answer'):
                 output += f"A: {q.get('answer')}\n"
+            if q.get('followup'):
+                output += f"Follow-up: {q.get('followup')}\n"
+            if q.get('followup_answer'):
+                output += f"Follow-up Answer: {q.get('followup_answer')}\n"
             output += "-" * 40 + "\n\n"
 
         return output
