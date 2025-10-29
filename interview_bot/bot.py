@@ -11,6 +11,7 @@ class InterviewBot:
         self.companies_cache = None
         self.categories_cache = None
         self.search_history = {}
+        self.difficulty_levels = ["Basic", "Medium", "Advanced"]  # Added difficulty levels
         # Load questions directly from local file
         self.load_questions()
         
@@ -43,7 +44,7 @@ class InterviewBot:
         except:
             return "0-2"  # Default to entry level if invalid input
 
-    def get_interview_questions(self, company, years_of_experience, category=None):
+    def get_interview_questions(self, company, years_of_experience, category=None, difficulty=None):
         """Get relevant interview questions based on company and experience"""
         try:
             if not company or not isinstance(company, str):
@@ -54,17 +55,16 @@ class InterviewBot:
             
             # Use general questions if company not found
             if company not in (self.questions_db.get("companies") or {}):
-                return {
-                    "status": "success",
-                    "company": "General",
-                    "experience_range": exp_range,
-                    "questions": self.questions_db.get("companies", {}).get("General", {}).get(exp_range, [])
-                }
+                questions = self.questions_db.get("companies", {}).get("Popular Interview Questions", {}).get(exp_range, [])
+            else:
+                questions = self.questions_db.get("companies", {}).get(company, {}).get(exp_range, [])
             
-            questions = self.questions_db.get("companies", {}).get(company, {}).get(exp_range, [])
-            
+            # Apply filters
             if category:
                 questions = [q for q in questions if q.get("category") == category]
+            
+            if difficulty:
+                questions = [q for q in questions if q.get("difficulty") == difficulty]
             
             return {
                 "status": "success",
@@ -82,6 +82,10 @@ class InterviewBot:
     def get_available_companies(self):
         """Get list of all companies in the database"""
         return self.companies_cache or []
+
+    def get_difficulty_levels(self):
+        """Get list of available difficulty levels"""
+        return self.difficulty_levels
 
     def format_response(self, response):
         """Format the response in a readable way"""
