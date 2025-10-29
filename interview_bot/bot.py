@@ -13,6 +13,28 @@ class InterviewBot:
             print(f"Current working directory: {current_dir}")
             print(f"Current file location: {os.path.abspath(__file__)}")
             
+            # Initialize with default questions
+            self.default_questions = {
+                "0-2": [
+                    {
+                        "question": "What are the main components of Selenium WebDriver?",
+                        "answer": "Main components:\n1. WebDriver\n2. WebElement\n3. Select class\n4. Alert interface\n5. Navigation interface",
+                        "category": "Selenium",
+                        "difficulty": "Basic",
+                        "type": "Technical"
+                    }
+                ],
+                "2-5": [
+                    {
+                        "question": "How do you implement data-driven testing in Selenium?",
+                        "answer": "Data-driven implementation:\n1. External data sources\n2. TestNG DataProvider\n3. Excel/CSV integration\n4. Parameter handling\n5. Test data management",
+                        "category": "Selenium",
+                        "difficulty": "Basic",
+                        "type": "Technical"
+                    }
+                ]
+            }
+            
             # Look for questions_db.json in the interview_bot package directory
             self.db_path = os.path.join(os.path.dirname(__file__), 'questions_db.json')
             if not os.path.exists(self.db_path):
@@ -93,6 +115,42 @@ class InterviewBot:
         """Get relevant interview questions based on company and experience"""
         print(f"Getting questions for {company}, exp: {years_of_experience}, category: {category}, difficulty: {difficulty}")
         try:
+            # Always start with default questions
+            exp_range = self.get_experience_range(years_of_experience)
+            questions = self.default_questions.get(exp_range, [])
+            
+            # Add web search results
+            web_results = search_interview_questions(company)
+            questions.extend(web_results)
+            
+            # Ensure all questions have proper metadata
+            for q in questions:
+                if not q.get('category'):
+                    q['category'] = 'Selenium'
+                if not q.get('difficulty'):
+                    q['difficulty'] = 'Basic'
+                if not q.get('type'):
+                    q['type'] = 'Technical'
+                q['experience_range'] = exp_range
+            
+            # Apply filters if specified
+            if category and category != 'All':
+                filtered = [q for q in questions if q.get('category') == category]
+                if filtered:
+                    questions = filtered
+            
+            if difficulty and difficulty != 'All':
+                filtered = [q for q in questions if q.get('difficulty') == difficulty]
+                if filtered:
+                    questions = filtered
+            
+            print(f"Returning {len(questions)} questions")
+            return {
+                "status": "success",
+                "company": company,
+                "experience_range": exp_range,
+                "questions": questions
+            }
             if not company or not isinstance(company, str):
                 return {"status": "error", "message": "Please provide a valid company name."}
             

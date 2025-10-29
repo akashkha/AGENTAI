@@ -4,8 +4,32 @@ import time
 
 def search_interview_questions(company_name, role="automation tester"):
     """Search for interview questions online"""
-    questions = []
     print(f"Searching questions for company: {company_name}")
+    
+    # Initialize with mandatory basic questions
+    questions = [
+        {
+            "question": "Explain how to handle dynamic web elements in Selenium",
+            "answer": "To handle dynamic elements:\n1. Use explicit waits\n2. Implement proper synchronization\n3. Use dynamic XPath/CSS selectors\n4. Handle StaleElementException\n5. Implement retry mechanisms",
+            "category": "Selenium",
+            "difficulty": "Basic",
+            "type": "Technical"
+        },
+        {
+            "question": "What are the different types of waits in Selenium?",
+            "answer": "Selenium waits include:\n1. Implicit wait\n2. Explicit wait\n3. Fluent wait\n4. PageLoadTimeout\n5. Custom wait conditions",
+            "category": "Selenium",
+            "difficulty": "Basic",
+            "type": "Technical"
+        },
+        {
+            "question": "How do you handle iframes in Selenium?",
+            "answer": "Handling iframes:\n1. Switch to frame using ID/name\n2. Switch using index\n3. Switch using WebElement\n4. Return to default content\n5. Handle nested frames",
+            "category": "Selenium",
+            "difficulty": "Basic",
+            "type": "Technical"
+        }
+    ]
     try:
         # Common automation testing interview questions template
         # Always include these basic Selenium questions
