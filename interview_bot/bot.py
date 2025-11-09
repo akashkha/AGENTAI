@@ -63,6 +63,27 @@ class InterviewBot:
                         "category": "Selenium",
                         "difficulty": "Basic",
                         "type": "Technical"
+                    },
+                    {
+                        "question": "What are the main components of Selenium WebDriver?",
+                        "answer": "Main components:\n1. WebDriver\n2. WebElement\n3. Select class\n4. Alert interface\n5. Navigation interface\n6. Actions class\n7. JavascriptExecutor",
+                        "category": "Selenium",
+                        "difficulty": "Basic",
+                        "type": "Technical"
+                    },
+                    {
+                        "question": "How do you handle alerts and popups in Selenium?",
+                        "answer": "Handling alerts:\n1. switchTo().alert()\n2. accept() method\n3. dismiss() method\n4. getText() from alert\n5. sendKeys() to alert\n6. Try-catch for timeout handling",
+                        "category": "Selenium",
+                        "difficulty": "Basic",
+                        "type": "Technical"
+                    },
+                    {
+                        "question": "What is the difference between driver.close() and driver.quit()?",
+                        "answer": "Difference:\n1. close(): Closes current window only\n2. quit(): Closes all browser windows\n3. quit(): Terminates WebDriver session\n4. close(): Window handle remains valid\n5. quit(): Releases all resources",
+                        "category": "Selenium",
+                        "difficulty": "Basic",
+                        "type": "Technical"
                     }
                 ],
                 "2-5": [
@@ -70,40 +91,64 @@ class InterviewBot:
                         "question": "How do you implement Page Object Model?",
                         "answer": "Implementing POM:\n1. Create separate class for each page\n2. Define elements as private variables\n3. Create public methods for actions\n4. Use proper encapsulation\n5. Implement reusable methods",
                         "category": "Selenium",
-                        "difficulty": "Basic",
+                        "difficulty": "Medium",
                         "type": "Technical"
                     },
                     {
                         "question": "How do you handle iframes in Selenium?",
                         "answer": "Handling iframes:\n1. Switch to frame using ID/Name\n2. Switch using index\n3. Switch using WebElement\n4. Return to default content\n5. Handle nested frames",
                         "category": "Selenium",
-                        "difficulty": "Basic",
+                        "difficulty": "Medium",
+                        "type": "Technical"
+                    },
+                    {
+                        "question": "How do you implement data-driven testing in Selenium?",
+                        "answer": "Data-driven implementation:\n1. External data sources (Excel, CSV, JSON)\n2. TestNG DataProvider\n3. Parameterized tests\n4. Test data management\n5. Configuration handling\n6. Database integration\n7. API data sources",
+                        "category": "Selenium",
+                        "difficulty": "Medium",
+                        "type": "Technical"
+                    },
+                    {
+                        "question": "Explain TestNG annotations and their execution order",
+                        "answer": "TestNG annotations:\n1. @BeforeSuite\n2. @BeforeTest\n3. @BeforeClass\n4. @BeforeMethod\n5. @Test\n6. @AfterMethod\n7. @AfterClass\n8. @AfterTest\n9. @AfterSuite",
+                        "category": "TestNG",
+                        "difficulty": "Medium",
+                        "type": "Technical"
+                    },
+                    {
+                        "question": "How do you handle cross-browser testing in your framework?",
+                        "answer": "Cross-browser testing:\n1. Driver factory pattern\n2. Browser configuration\n3. Selenium Grid setup\n4. Cloud services integration\n5. Parallel execution\n6. Browser-specific handling\n7. Compatibility testing",
+                        "category": "Framework Design",
+                        "difficulty": "Medium",
+                        "type": "Technical"
+                    },
+                    {
+                        "question": "How do you implement reporting in your automation framework?",
+                        "answer": "Reporting implementation:\n1. ExtentReports integration\n2. TestNG listeners\n3. Screenshot capture\n4. Log management\n5. HTML reports\n6. Email notifications\n7. Dashboard integration",
+                        "category": "Framework Design",
+                        "difficulty": "Medium",
                         "type": "Technical"
                     }
                 ]
             }
             
-            # Initialize with default questions
-            self.default_questions = {
-                "0-2": [
-                    {
-                        "question": "What are the main components of Selenium WebDriver?",
-                        "answer": "Main components:\n1. WebDriver\n2. WebElement\n3. Select class\n4. Alert interface\n5. Navigation interface",
-                        "category": "Selenium",
-                        "difficulty": "Basic",
-                        "type": "Technical"
-                    }
-                ],
-                "2-5": [
-                    {
-                        "question": "How do you implement data-driven testing in Selenium?",
-                        "answer": "Data-driven implementation:\n1. External data sources\n2. TestNG DataProvider\n3. Excel/CSV integration\n4. Parameter handling\n5. Test data management",
-                        "category": "Selenium",
-                        "difficulty": "Basic",
-                        "type": "Technical"
-                    }
-                ]
-            }
+            # Extend default_questions with additional experience-based questions
+            self.default_questions["5+"] = [
+                {
+                    "question": "How do you design a scalable automation framework architecture?",
+                    "answer": "Scalable architecture design:\n1. Modular framework design\n2. Microservices testing approach\n3. Cloud-based execution\n4. Advanced reporting systems\n5. Performance optimization\n6. Team collaboration tools\n7. Maintenance strategies",
+                    "category": "Selenium",
+                    "difficulty": "Advanced",
+                    "type": "Technical"
+                },
+                {
+                    "question": "How do you implement CI/CD pipeline integration for automation tests?",
+                    "answer": "CI/CD integration:\n1. Jenkins/Azure DevOps setup\n2. Automated test execution triggers\n3. Parallel execution strategies\n4. Test result reporting\n5. Failure analysis automation\n6. Environment management\n7. Deployment validation",
+                    "category": "Selenium", 
+                    "difficulty": "Advanced",
+                    "type": "Technical"
+                }
+            ]
             
             # Look for questions_db.json in the interview_bot package directory
             self.db_path = os.path.join(os.path.dirname(__file__), 'questions_db.json')
