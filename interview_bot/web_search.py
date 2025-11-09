@@ -97,6 +97,42 @@ def search_interview_questions(company_name, role="automation tester", category=
         # Use default keywords for all companies
         keywords = industry_keywords['default']
         
+        # Java coding specific questions
+        java_coding_questions = [
+            {
+                "question": f"Write a Java program to find the second largest element in an array - commonly asked at {company_name}",
+                "answer": "```java\npublic class SecondLargest {\n    public static int findSecondLargest(int[] arr) {\n        if (arr.length < 2) return -1;\n        \n        int largest = Integer.MIN_VALUE;\n        int secondLargest = Integer.MIN_VALUE;\n        \n        for (int num : arr) {\n            if (num > largest) {\n                secondLargest = largest;\n                largest = num;\n            } else if (num > secondLargest && num != largest) {\n                secondLargest = num;\n            }\n        }\n        \n        return secondLargest;\n    }\n}```",
+                "category": "Java Coding",
+                "difficulty": "Medium",
+                "type": "Coding",
+                "source": f"Generated for {company_name}"
+            },
+            {
+                "question": f"Implement ArrayList from scratch in Java - {company_name} coding interview",
+                "answer": "```java\npublic class CustomArrayList<T> {\n    private Object[] array;\n    private int size = 0;\n    private int capacity = 10;\n    \n    public CustomArrayList() {\n        array = new Object[capacity];\n    }\n    \n    public void add(T element) {\n        if (size >= capacity) {\n            resize();\n        }\n        array[size++] = element;\n    }\n    \n    @SuppressWarnings(\"unchecked\")\n    public T get(int index) {\n        if (index >= size || index < 0) {\n            throw new IndexOutOfBoundsException();\n        }\n        return (T) array[index];\n    }\n    \n    private void resize() {\n        capacity *= 2;\n        array = Arrays.copyOf(array, capacity);\n    }\n    \n    public int size() { return size; }\n}```",
+                "category": "Java Coding",
+                "difficulty": "Advanced",
+                "type": "Coding",
+                "source": f"Generated for {company_name}"
+            },
+            {
+                "question": f"Write a program to check if two strings are anagrams - {company_name} Java interview",
+                "answer": "```java\npublic class AnagramChecker {\n    // Method 1: Using sorting\n    public static boolean areAnagrams1(String str1, String str2) {\n        if (str1.length() != str2.length()) return false;\n        \n        char[] arr1 = str1.toLowerCase().toCharArray();\n        char[] arr2 = str2.toLowerCase().toCharArray();\n        \n        Arrays.sort(arr1);\n        Arrays.sort(arr2);\n        \n        return Arrays.equals(arr1, arr2);\n    }\n    \n    // Method 2: Using HashMap\n    public static boolean areAnagrams2(String str1, String str2) {\n        if (str1.length() != str2.length()) return false;\n        \n        Map<Character, Integer> map = new HashMap<>();\n        \n        for (char c : str1.toLowerCase().toCharArray()) {\n            map.put(c, map.getOrDefault(c, 0) + 1);\n        }\n        \n        for (char c : str2.toLowerCase().toCharArray()) {\n            map.put(c, map.getOrDefault(c, 0) - 1);\n            if (map.get(c) == 0) map.remove(c);\n        }\n        \n        return map.isEmpty();\n    }\n}```",
+                "category": "Java Coding",
+                "difficulty": "Medium",
+                "type": "Coding",
+                "source": f"Generated for {company_name}"
+            },
+            {
+                "question": f"Implement a stack using LinkedList in Java - {company_name} data structure question",
+                "answer": "```java\npublic class StackUsingLinkedList<T> {\n    private Node<T> top;\n    private int size;\n    \n    private static class Node<T> {\n        T data;\n        Node<T> next;\n        \n        Node(T data) {\n            this.data = data;\n        }\n    }\n    \n    public void push(T item) {\n        Node<T> newNode = new Node<>(item);\n        newNode.next = top;\n        top = newNode;\n        size++;\n    }\n    \n    public T pop() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        T data = top.data;\n        top = top.next;\n        size--;\n        return data;\n    }\n    \n    public T peek() {\n        if (isEmpty()) {\n            throw new EmptyStackException();\n        }\n        return top.data;\n    }\n    \n    public boolean isEmpty() {\n        return top == null;\n    }\n    \n    public int size() {\n        return size;\n    }\n}```",
+                "category": "Java Coding",
+                "difficulty": "Medium",
+                "type": "Coding",
+                "source": f"Generated for {company_name}"
+            }
+        ]
+        
         # Generate relevant questions for any company
         common_questions = [
             {
@@ -169,6 +205,11 @@ def search_interview_questions(company_name, role="automation tester", category=
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
 
+        # Add Java coding questions if category matches
+        if category.lower() == "java coding":
+            for java_q in java_coding_questions:
+                questions.append(java_q)
+        
         # Add company-specific context to common questions
         for template in common_questions:
             question = {
@@ -190,14 +231,25 @@ def search_interview_questions(company_name, role="automation tester", category=
             all_questions = []
             
             # Different search queries to get varied results
-            search_queries = [
-                f"{company} {role} interview questions {category}",
-                f"{company} automation testing interview experience",
-                f"{company} selenium webdriver interview questions",
-                f"{company} technical interview questions testing",
-                f"{company} software tester interview questions",
-                f"{company} QA automation interview experience"
-            ]
+            # Dynamic search queries based on category
+            if category.lower() == "java coding":
+                search_queries = [
+                    f"{company} java coding interview questions",
+                    f"{company} java programming interview",
+                    f"{company} java algorithms data structures interview",
+                    f"{company} java collections interview questions",
+                    f"{company} java coding problems interview",
+                    f"{company} core java interview coding questions"
+                ]
+            else:
+                search_queries = [
+                    f"{company} {role} interview questions {category}",
+                    f"{company} automation testing interview experience",
+                    f"{company} selenium webdriver interview questions",
+                    f"{company} technical interview questions testing",
+                    f"{company} software tester interview questions",
+                    f"{company} QA automation interview experience"
+                ]
             
             platforms = {
                 'glassdoor.com': 'Glassdoor',
@@ -287,7 +339,13 @@ def search_interview_questions(company_name, role="automation tester", category=
                             elements = soup.select(selector)
                             for element in elements:
                                 question_text = element.get_text(strip=True)
-                                if len(question_text) > 10 and any(keyword in question_text.lower() for keyword in ['selenium', 'automation', 'testing', 'framework', 'webdriver']):
+                                # Keywords based on category
+                            if category.lower() == "java coding":
+                                relevant_keywords = ['java', 'coding', 'programming', 'algorithm', 'data structure', 'array', 'string', 'hashmap', 'collection']
+                            else:
+                                relevant_keywords = ['selenium', 'automation', 'testing', 'framework', 'webdriver']
+                            
+                            if len(question_text) > 10 and any(keyword in question_text.lower() for keyword in relevant_keywords):
                                     questions.append({
                                         "question": question_text,
                                         "source": "Glassdoor",

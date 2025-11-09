@@ -84,6 +84,34 @@ class InterviewBot:
                         "category": "Selenium",
                         "difficulty": "Basic",
                         "type": "Technical"
+                    },
+                    {
+                        "question": "Write a Java program to check if a string is palindrome",
+                        "answer": "```java\npublic class PalindromeCheck {\n    public static boolean isPalindrome(String str) {\n        str = str.toLowerCase().replaceAll(\"[^a-zA-Z0-9]\", \"\");\n        int left = 0, right = str.length() - 1;\n        \n        while (left < right) {\n            if (str.charAt(left) != str.charAt(right)) {\n                return false;\n            }\n            left++;\n            right--;\n        }\n        return true;\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(isPalindrome(\"racecar\")); // true\n        System.out.println(isPalindrome(\"hello\")); // false\n    }\n}```",
+                        "category": "Java Coding",
+                        "difficulty": "Basic",
+                        "type": "Coding"
+                    },
+                    {
+                        "question": "Find the largest and smallest elements in an array using Java",
+                        "answer": "```java\npublic class MinMaxFinder {\n    public static void findMinMax(int[] arr) {\n        if (arr.length == 0) return;\n        \n        int min = arr[0], max = arr[0];\n        \n        for (int i = 1; i < arr.length; i++) {\n            if (arr[i] < min) {\n                min = arr[i];\n            }\n            if (arr[i] > max) {\n                max = arr[i];\n            }\n        }\n        \n        System.out.println(\"Min: \" + min + \", Max: \" + max);\n    }\n    \n    // Using Collections\n    public static void findMinMaxWithCollections(List<Integer> list) {\n        int min = Collections.min(list);\n        int max = Collections.max(list);\n        System.out.println(\"Min: \" + min + \", Max: \" + max);\n    }\n}```",
+                        "category": "Java Coding",
+                        "difficulty": "Basic",
+                        "type": "Coding"
+                    },
+                    {
+                        "question": "Write a program to count frequency of characters in a string using HashMap",
+                        "answer": "```java\nimport java.util.*;\n\npublic class CharacterFrequency {\n    public static void countCharacters(String str) {\n        Map<Character, Integer> frequencyMap = new HashMap<>();\n        \n        for (char c : str.toCharArray()) {\n            frequencyMap.put(c, frequencyMap.getOrDefault(c, 0) + 1);\n        }\n        \n        // Print frequency\n        for (Map.Entry<Character, Integer> entry : frequencyMap.entrySet()) {\n            System.out.println(entry.getKey() + \": \" + entry.getValue());\n        }\n    }\n    \n    // Using Java 8 Streams\n    public static void countWithStreams(String str) {\n        str.chars()\n           .mapToObj(c -> (char) c)\n           .collect(Collectors.groupingBy(c -> c, Collectors.counting()))\n           .forEach((k, v) -> System.out.println(k + \": \" + v));\n    }\n}```",
+                        "category": "Java Coding",
+                        "difficulty": "Basic",
+                        "type": "Coding"
+                    },
+                    {
+                        "question": "Implement bubble sort algorithm in Java",
+                        "answer": "```java\npublic class BubbleSort {\n    public static void bubbleSort(int[] arr) {\n        int n = arr.length;\n        boolean swapped;\n        \n        for (int i = 0; i < n - 1; i++) {\n            swapped = false;\n            \n            for (int j = 0; j < n - i - 1; j++) {\n                if (arr[j] > arr[j + 1]) {\n                    // Swap elements\n                    int temp = arr[j];\n                    arr[j] = arr[j + 1];\n                    arr[j + 1] = temp;\n                    swapped = true;\n                }\n            }\n            \n            // If no swapping occurred, array is sorted\n            if (!swapped) break;\n        }\n    }\n    \n    public static void printArray(int[] arr) {\n        System.out.println(Arrays.toString(arr));\n    }\n}```",
+                        "category": "Java Coding",
+                        "difficulty": "Basic",
+                        "type": "Coding"
                     }
                 ],
                 "2-5": [
@@ -128,6 +156,20 @@ class InterviewBot:
                         "category": "Framework Design",
                         "difficulty": "Medium",
                         "type": "Technical"
+                    },
+                    {
+                        "question": "Write a Java program to find duplicate elements in an array",
+                        "answer": "```java\npublic class FindDuplicates {\n    public static void findDuplicates(int[] arr) {\n        Set<Integer> seen = new HashSet<>();\n        Set<Integer> duplicates = new HashSet<>();\n        \n        for (int num : arr) {\n            if (!seen.add(num)) {\n                duplicates.add(num);\n            }\n        }\n        \n        System.out.println(\"Duplicates: \" + duplicates);\n    }\n}```",
+                        "category": "Java Coding",
+                        "difficulty": "Medium",
+                        "type": "Coding"
+                    },
+                    {
+                        "question": "How to reverse a string in Java without using built-in methods?",
+                        "answer": "```java\npublic class ReverseString {\n    public static String reverse(String str) {\n        char[] chars = str.toCharArray();\n        int left = 0, right = chars.length - 1;\n        \n        while (left < right) {\n            char temp = chars[left];\n            chars[left] = chars[right];\n            chars[right] = temp;\n            left++;\n            right--;\n        }\n        \n        return new String(chars);\n    }\n}```",
+                        "category": "Java Coding",
+                        "difficulty": "Basic",
+                        "type": "Coding"
                     }
                 ]
             }
@@ -144,13 +186,25 @@ class InterviewBot:
                 {
                     "question": "How do you implement CI/CD pipeline integration for automation tests?",
                     "answer": "CI/CD integration:\n1. Jenkins/Azure DevOps setup\n2. Automated test execution triggers\n3. Parallel execution strategies\n4. Test result reporting\n5. Failure analysis automation\n6. Environment management\n7. Deployment validation",
-                    "category": "Selenium", 
-                    "difficulty": "Advanced",
-                    "type": "Technical"
-                }
-            ]
-            
-            # Look for questions_db.json in the interview_bot package directory
+                        "category": "Selenium", 
+                        "difficulty": "Advanced",
+                        "type": "Technical"
+                    },
+                    {
+                        "question": "Implement a custom HashMap in Java with collision handling",
+                        "answer": "```java\npublic class CustomHashMap<K, V> {\n    private Node<K, V>[] buckets;\n    private int capacity = 16;\n    private int size = 0;\n    \n    static class Node<K, V> {\n        K key;\n        V value;\n        Node<K, V> next;\n        \n        Node(K key, V value) {\n            this.key = key;\n            this.value = value;\n        }\n    }\n    \n    public CustomHashMap() {\n        buckets = new Node[capacity];\n    }\n    \n    private int hash(K key) {\n        return Math.abs(key.hashCode() % capacity);\n    }\n    \n    public void put(K key, V value) {\n        int index = hash(key);\n        Node<K, V> head = buckets[index];\n        \n        // Check if key already exists\n        Node<K, V> current = head;\n        while (current != null) {\n            if (current.key.equals(key)) {\n                current.value = value;\n                return;\n            }\n            current = current.next;\n        }\n        \n        // Add new node\n        Node<K, V> newNode = new Node<>(key, value);\n        newNode.next = head;\n        buckets[index] = newNode;\n        size++;\n    }\n    \n    public V get(K key) {\n        int index = hash(key);\n        Node<K, V> head = buckets[index];\n        \n        while (head != null) {\n            if (head.key.equals(key)) {\n                return head.value;\n            }\n            head = head.next;\n        }\n        return null;\n    }\n}```",
+                        "category": "Java Coding",
+                        "difficulty": "Advanced", 
+                        "type": "Coding"
+                    },
+                    {
+                        "question": "Design and implement a thread-safe Singleton pattern in Java",
+                        "answer": "```java\npublic class ThreadSafeSingleton {\n    private static volatile ThreadSafeSingleton instance;\n    \n    private ThreadSafeSingleton() {\n        // Private constructor\n    }\n    \n    // Double-checked locking\n    public static ThreadSafeSingleton getInstance() {\n        if (instance == null) {\n            synchronized (ThreadSafeSingleton.class) {\n                if (instance == null) {\n                    instance = new ThreadSafeSingleton();\n                }\n            }\n        }\n        return instance;\n    }\n    \n    // Bill Pugh Solution (Recommended)\n    private static class SingletonHelper {\n        private static final ThreadSafeSingleton INSTANCE = new ThreadSafeSingleton();\n    }\n    \n    public static ThreadSafeSingleton getBillPughInstance() {\n        return SingletonHelper.INSTANCE;\n    }\n}```",
+                        "category": "Java Coding",
+                        "difficulty": "Advanced",
+                        "type": "Coding"
+                    }
+                ]            # Look for questions_db.json in the interview_bot package directory
             self.db_path = os.path.join(os.path.dirname(__file__), 'questions_db.json')
             if not os.path.exists(self.db_path):
                 print(f"Database not found at: {self.db_path}")
