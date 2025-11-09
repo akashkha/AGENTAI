@@ -34,7 +34,7 @@ def search_interview_questions(company_name, role="automation tester"):
         }
     ]
     
-    questions = company_questions
+    questions = company_questions + [
         {
             "question": "Explain how to handle dynamic web elements in Selenium",
             "answer": "To handle dynamic elements:\n1. Use explicit waits\n2. Implement proper synchronization\n3. Use dynamic XPath/CSS selectors\n4. Handle StaleElementException\n5. Implement retry mechanisms",
