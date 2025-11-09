@@ -1,8 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 import time
+import random
+from urllib.parse import quote
 
-def search_interview_questions(company_name, role="automation tester"):
+def search_interview_questions(company_name, role="automation tester", category="selenium", max_questions=50):
     """Search for interview questions online"""
     print(f"Searching questions for company: {company_name}")
     
@@ -182,81 +184,304 @@ def search_interview_questions(company_name, role="automation tester"):
             }
             questions.append(question)
 
-        # Try to fetch real questions from online sources
+        # Enhanced multi-platform search functions
+        def search_google_for_questions(company, role, category):
+            """Search Google for interview questions from multiple sources"""
+            all_questions = []
+            
+            # Different search queries to get varied results
+            search_queries = [
+                f"{company} {role} interview questions {category}",
+                f"{company} automation testing interview experience",
+                f"{company} selenium webdriver interview questions",
+                f"{company} technical interview questions testing",
+                f"{company} software tester interview questions",
+                f"{company} QA automation interview experience"
+            ]
+            
+            platforms = {
+                'glassdoor.com': 'Glassdoor',
+                'geeksforgeeks.org': 'GeeksforGeeks', 
+                'ambitionbox.com': 'AmbitionBox',
+                'linkedin.com': 'LinkedIn',
+                'naukri.com': 'Naukri',
+                'indeed.com': 'Indeed',
+                'interviewbit.com': 'InterviewBit',
+                'careercup.com': 'CareerCup',
+                'leetcode.com': 'LeetCode'
+            }
+            
+            for query in search_queries[:3]:  # Limit to 3 queries to avoid rate limiting
+                try:
+                    # Use Google search to find relevant pages
+                    search_url = f"https://www.google.com/search?q={quote(query)}"
+                    response = requests.get(search_url, headers=headers, timeout=10)
+                    
+                    if response.status_code == 200:
+                        soup = BeautifulSoup(response.text, 'html.parser')
+                        
+                        # Extract search results
+                        search_results = soup.find_all('div', {'class': 'g'})[:10]  # Top 10 results
+                        
+                        for result in search_results:
+                            try:
+                                link_element = result.find('a')
+                                if link_element and 'href' in link_element.attrs:
+                                    url = link_element['href']
+                                    title = result.find('h3')
+                                    
+                                    if title:
+                                        title_text = title.get_text(strip=True)
+                                        
+                                        # Check if URL is from known platforms
+                                        source = "Web Search"
+                                        for platform, platform_name in platforms.items():
+                                            if platform in url:
+                                                source = platform_name
+                                                break
+                                        
+                                        # Extract potential questions from title/snippet
+                                        if any(keyword in title_text.lower() for keyword in ['interview', 'question', 'experience']):
+                                            all_questions.append({
+                                                "question": title_text,
+                                                "source": source,
+                                                "url": url,
+                                                "company": company,
+                                                "category": category,
+                                                "difficulty": "Medium",
+                                                "type": "Technical"
+                                            })
+                            except Exception as e:
+                                continue
+                    
+                    time.sleep(1)  # Rate limiting
+                except Exception as e:
+                    print(f"Error in Google search: {str(e)}")
+                    continue
+            
+            return all_questions
+
         def scrape_glassdoor(company):
-            base_url = f"https://www.glassdoor.com/Interview/{company}-Interview-Questions-E"
+            """Enhanced Glassdoor scraping"""
+            questions = []
+            search_terms = [company, f"{company} automation", f"{company} selenium", f"{company} testing"]
+            
+            for term in search_terms[:2]:  # Limit searches
+                try:
+                    # Search Glassdoor interview section
+                    search_url = f"https://www.glassdoor.com/Interview/jobs.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword={quote(term)}&sc.keyword={quote(term)}"
+                    response = requests.get(search_url, headers=headers, timeout=10)
+                    
+                    if response.status_code == 200:
+                        soup = BeautifulSoup(response.text, 'html.parser')
+                        
+                        # Look for interview question elements with various selectors
+                        question_selectors = [
+                            '.questionText',
+                            '[data-test="interview-question"]',
+                            '.interviewQuestion',
+                            '.question-text'
+                        ]
+                        
+                        for selector in question_selectors:
+                            elements = soup.select(selector)
+                            for element in elements:
+                                question_text = element.get_text(strip=True)
+                                if len(question_text) > 10 and any(keyword in question_text.lower() for keyword in ['selenium', 'automation', 'testing', 'framework', 'webdriver']):
+                                    questions.append({
+                                        "question": question_text,
+                                        "source": "Glassdoor",
+                                        "company": company,
+                                        "category": "Selenium",
+                                        "difficulty": "Medium",
+                                        "type": "Technical"
+                                    })
+                    
+                    time.sleep(2)  # Rate limiting
+                except Exception as e:
+                    print(f"Error scraping Glassdoor for {term}: {str(e)}")
+                    continue
+            
+            return questions
+
+        def scrape_geeksforgeeks(company):
+            """Enhanced GeeksforGeeks scraping"""
+            questions = []
+            search_urls = [
+                f"https://www.geeksforgeeks.org/?s={quote(company + ' interview')}",
+                f"https://www.geeksforgeeks.org/tag/{company.lower()}-interview-experience/",
+                f"https://www.geeksforgeeks.org/?s={quote(company + ' automation testing')}"
+            ]
+            
+            for url in search_urls:
+                try:
+                    response = requests.get(url, headers=headers, timeout=10)
+                    if response.status_code == 200:
+                        soup = BeautifulSoup(response.text, 'html.parser')
+                        
+                        # Look for article titles and content
+                        article_elements = soup.find_all(['h2', 'h3', 'h4', 'p', 'li'])
+                        
+                        for element in article_elements:
+                            text = element.get_text(strip=True)
+                            
+                            # Check if it's a question (contains question words)
+                            if ('?' in text or any(starter in text.lower() for starter in ['what is', 'how do', 'explain', 'describe', 'why', 'when'])) and len(text) > 20:
+                                if any(keyword in text.lower() for keyword in ['selenium', 'automation', 'testing', 'webdriver', 'framework']):
+                                    questions.append({
+                                        "question": text,
+                                        "source": "GeeksforGeeks",
+                                        "company": company,
+                                        "category": "Selenium",
+                                        "difficulty": "Medium",
+                                        "type": "Technical"
+                                    })
+                    
+                    time.sleep(1)
+                except Exception as e:
+                    print(f"Error scraping GeeksforGeeks: {str(e)}")
+                    continue
+            
+            return questions
+
+        def scrape_ambitionbox(company):
+            """Scrape AmbitionBox for interview questions"""
             questions = []
             try:
-                response = requests.get(base_url, headers=headers, timeout=10)
-                if response.ok:
+                search_url = f"https://www.ambitionbox.com/search?q={quote(company)}"
+                response = requests.get(search_url, headers=headers, timeout=10)
+                
+                if response.status_code == 200:
                     soup = BeautifulSoup(response.text, 'html.parser')
-                    # Find interview question containers
-                    question_elements = soup.find_all('div', {'class': 'questionText'})
-                    for element in question_elements:
-                        question_text = element.get_text(strip=True)
-                        if 'selenium' in question_text.lower() or 'automation' in question_text.lower():
+                    
+                    # Look for interview-related content
+                    content_elements = soup.find_all(['div', 'p', 'span'], class_=lambda x: x and ('interview' in x.lower() or 'question' in x.lower()))
+                    
+                    for element in content_elements:
+                        text = element.get_text(strip=True)
+                        if len(text) > 15 and any(keyword in text.lower() for keyword in ['selenium', 'automation', 'testing']):
                             questions.append({
-                                "question": question_text,
-                                "source": "Glassdoor",
+                                "question": text,
+                                "source": "AmbitionBox",
                                 "company": company,
                                 "category": "Selenium",
                                 "difficulty": "Medium",
                                 "type": "Technical"
                             })
             except Exception as e:
-                print(f"Error scraping Glassdoor: {str(e)}")
+                print(f"Error scraping AmbitionBox: {str(e)}")
+            
             return questions
 
-        def scrape_geeksforgeeks(company):
-            base_url = f"https://www.geeksforgeeks.org/tag/{company}-interview-experience/"
+        def scrape_naukri_indeed(company):
+            """Scrape job portals for interview insights"""
             questions = []
-            try:
-                response = requests.get(base_url, headers=headers, timeout=10)
-                if response.ok:
-                    soup = BeautifulSoup(response.text, 'html.parser')
-                    # Find technical question sections
-                    content = soup.find_all('div', {'class': 'entry-content'})
-                    for section in content:
-                        question_blocks = section.find_all(['h3', 'strong'])
-                        for block in question_blocks:
-                            text = block.get_text(strip=True)
-                            if any(keyword in text.lower() for keyword in ['selenium', 'automation', 'testing']):
-                                questions.append({
-                                    "question": text,
-                                    "source": "GeeksforGeeks",
-                                    "company": company,
-                                    "category": "Selenium",
-                                    "difficulty": "Medium",
-                                    "type": "Technical"
-                                })
-            except Exception as e:
-                print(f"Error scraping GeeksforGeeks: {str(e)}")
+            portals = [
+                ('naukri.com', 'Naukri'),
+                ('indeed.com', 'Indeed')
+            ]
+            
+            for domain, source_name in portals:
+                try:
+                    search_url = f"https://www.google.com/search?q=site:{domain} {quote(company)} interview questions automation testing"
+                    response = requests.get(search_url, headers=headers, timeout=10)
+                    
+                    if response.status_code == 200:
+                        soup = BeautifulSoup(response.text, 'html.parser')
+                        
+                        # Extract search result titles and snippets
+                        results = soup.find_all('div', {'class': 'g'})
+                        
+                        for result in results[:5]:  # Top 5 results per portal
+                            try:
+                                title_elem = result.find('h3')
+                                snippet_elem = result.find('span', {'class': 'st'}) or result.find('div', {'class': 'VwiC3b'})
+                                
+                                if title_elem:
+                                    title = title_elem.get_text(strip=True)
+                                    snippet = snippet_elem.get_text(strip=True) if snippet_elem else ""
+                                    
+                                    combined_text = f"{title}. {snippet}"
+                                    
+                                    if any(keyword in combined_text.lower() for keyword in ['interview', 'question', 'selenium', 'automation']):
+                                        questions.append({
+                                            "question": combined_text[:200] + "..." if len(combined_text) > 200 else combined_text,
+                                            "source": source_name,
+                                            "company": company,
+                                            "category": "Selenium",
+                                            "difficulty": "Medium",
+                                            "type": "Technical"
+                                        })
+                            except Exception as e:
+                                continue
+                    
+                    time.sleep(1)
+                except Exception as e:
+                    print(f"Error searching {source_name}: {str(e)}")
+                    continue
+            
             return questions
 
-        # Get real questions from multiple sources
-        real_questions = []
+        # Enhanced multi-platform search - Get questions from ALL sources
+        print(f"🔍 Starting comprehensive search for {company_name} interview questions...")
+        all_real_questions = []
         
-        # Try Glassdoor
+        # 1. Google Search for questions from multiple platforms
+        print("🌐 Searching Google for interview questions...")
+        google_questions = search_google_for_questions(company_name, role, category)
+        if google_questions:
+            all_real_questions.extend(google_questions)
+            print(f"✅ Found {len(google_questions)} questions from Google search")
+
+        # 2. Glassdoor scraping
+        print("💼 Scraping Glassdoor...")
         glassdoor_questions = scrape_glassdoor(company_name)
         if glassdoor_questions:
-            real_questions.extend(glassdoor_questions)
-            print(f"Found {len(glassdoor_questions)} questions from Glassdoor")
+            all_real_questions.extend(glassdoor_questions)
+            print(f"✅ Found {len(glassdoor_questions)} questions from Glassdoor")
 
-        # Try GeeksforGeeks
+        # 3. GeeksforGeeks scraping
+        print("🎓 Scraping GeeksforGeeks...")
         geeksforgeeks_questions = scrape_geeksforgeeks(company_name)
         if geeksforgeeks_questions:
-            real_questions.extend(geeksforgeeks_questions)
-            print(f"Found {len(geeksforgeeks_questions)} questions from GeeksforGeeks")
+            all_real_questions.extend(geeksforgeeks_questions)
+            print(f"✅ Found {len(geeksforgeeks_questions)} questions from GeeksforGeeks")
 
-        # Add real questions to results if found
-        if real_questions:
-            print(f"Adding {len(real_questions)} real questions from online sources")
-            questions.extend(real_questions)
-        else:
-            print("No real questions found from online sources, using enhanced templates")
-            # If no real questions found, use enhanced templates but mark them clearly
+        # 4. AmbitionBox scraping
+        print("💡 Scraping AmbitionBox...")
+        ambitionbox_questions = scrape_ambitionbox(company_name)
+        if ambitionbox_questions:
+            all_real_questions.extend(ambitionbox_questions)
+            print(f"✅ Found {len(ambitionbox_questions)} questions from AmbitionBox")
+
+        # 5. Naukri and Indeed search
+        print("🔍 Searching job portals...")
+        portal_questions = scrape_naukri_indeed(company_name)
+        if portal_questions:
+            all_real_questions.extend(portal_questions)
+            print(f"✅ Found {len(portal_questions)} questions from job portals")
+
+        # Add all real questions found
+        if all_real_questions:
+            print(f"🎉 Total found: {len(all_real_questions)} real questions from online sources!")
+            questions.extend(all_real_questions)
+            
+            # Remove duplicates based on question text
+            seen_questions = set()
+            unique_questions = []
             for q in questions:
-                q["source"] = "Template (No real questions found)"
+                question_text = q.get('question', '').lower().strip()
+                if question_text not in seen_questions and len(question_text) > 10:
+                    seen_questions.add(question_text)
+                    unique_questions.append(q)
+            
+            questions = unique_questions
+            print(f"📋 After removing duplicates: {len(questions)} unique questions")
+        else:
+            print("⚠️ No real questions found from online sources, using enhanced templates")
+            # Mark template questions clearly
+            for q in questions:
+                q["source"] = "Generated Template"
 
 
         return questions

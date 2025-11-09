@@ -250,13 +250,20 @@ class InterviewBot:
                 company_questions = self.questions_db["companies"][company].get(exp_range, [])
                 questions.extend(company_questions)
             
-            # Get web search results with company-specific questions
-            web_results = search_interview_questions(company)
+            # Get comprehensive web search results from all platforms
+            print(f"🚀 Starting comprehensive search for {company} interview questions...")
+            web_results = search_interview_questions(
+                company, 
+                role="automation tester", 
+                category=category or "selenium", 
+                max_questions=100  # Get up to 100 questions from web
+            )
+            
+            print(f"📊 Web search returned {len(web_results)} questions")
             for q in web_results:
                 q["experience_range"] = exp_range
-                # Ensure the question is relevant to the company
-                if company.lower() in q.get("question", "").lower():
-                    questions.append(q)
+                # Add all web results - no filtering by company name to get more variety
+                questions.append(q)
             
             # Ensure all questions have proper metadata
             for q in questions:

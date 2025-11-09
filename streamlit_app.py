@@ -82,21 +82,64 @@ if st.button("🔍 Get Questions", type="primary", key="search"):
                 )
                 
                 if response.get("questions"):
-                    st.success(f"Found {len(response['questions'])} questions!")
+                    total_questions = len(response['questions'])
+                    st.success(f"🎉 Found {total_questions} questions from multiple sources!")
                     
-                    # Display questions in a clean format
+                    # Show source breakdown
+                    source_counts = {}
+                    for q in response['questions']:
+                        source = q.get('source', 'Unknown')
+                        source_counts[source] = source_counts.get(source, 0) + 1
+                    
+                    if len(source_counts) > 1:
+                        st.info("📊 **Sources breakdown:** " + " | ".join([f"{source}: {count}" for source, count in source_counts.items()]))
+                    
+                    # Display questions in a clean format with source icons
+                    source_icons = {
+                        'Glassdoor': '💼',
+                        'GeeksforGeeks': '🎓', 
+                        'AmbitionBox': '💡',
+                        'LinkedIn': '💼',
+                        'Naukri': '🔍',
+                        'Indeed': '🔍',
+                        'InterviewBit': '💻',
+                        'CareerCup': '👨‍💻',
+                        'LeetCode': '🧮',
+                        'Web Search': '🌐',
+                        'Generated Template': '🤖'
+                    }
+                    
                     for i, q in enumerate(response["questions"], 1):
-                        with st.expander(f"Question #{i}: {q.get('question', '')[:100]}..."):
-                            st.markdown(f"**Source:** {q.get('source', 'Generated')} :link:")
-                            st.markdown(f"**Category:** {q.get('category', 'General')}")
-                            st.markdown(f"**Difficulty:** {q.get('difficulty', 'Medium')}")
-                            st.markdown(f"**Question:**\n{q.get('question')}")
+                        source = q.get('source', 'Generated')
+                        icon = source_icons.get(source, '📝')
+                        
+                        with st.expander(f"Question #{i}: {q.get('question', '')[:80]}... {icon}"):
+                            col1, col2 = st.columns([3, 1])
+                            
+                            with col1:
+                                st.markdown(f"**{icon} Source:** {source}")
+                                if q.get('url'):
+                                    st.markdown(f"**🔗 URL:** [View Source]({q.get('url')})")
+                            
+                            with col2:
+                                st.markdown(f"**📂 Category:** {q.get('category', 'General')}")
+                                st.markdown(f"**⚡ Difficulty:** {q.get('difficulty', 'Medium')}")
+                            
+                            st.markdown("---")
+                            st.markdown(f"**❓ Question:**")
+                            st.write(q.get('question'))
+                            
                             if q.get('answer'):
-                                st.markdown(f"**Answer:**\n{q.get('answer')}")
+                                st.markdown(f"**✅ Answer:**")
+                                st.write(q.get('answer'))
+                            
                             if q.get('followup'):
-                                st.markdown(f"**Follow-up:**\n{q.get('followup')}")
+                                st.markdown(f"**🔄 Follow-up:**")
+                                st.write(q.get('followup'))
+                            
                             if q.get('followup_answer'):
-                                st.markdown(f"**Follow-up Answer:**\n{q.get('followup_answer')}")
+                                st.markdown(f"**✅ Follow-up Answer:**")
+                                st.write(q.get('followup_answer'))
                 else:
                     st.warning("No questions found. Trying without filters...")
                     # Retry without filters
