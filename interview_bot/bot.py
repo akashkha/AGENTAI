@@ -338,19 +338,16 @@ class InterviewBot:
             if category and category != "All":
                 filtered = [q for q in questions if q.get("category", "Selenium") == category]
                 print(f"Debug: After category filter - {len(filtered)} questions")
-                if filtered:
-                    questions = filtered
+                questions = filtered
             
             if difficulty and difficulty != "All":
                 filtered = [q for q in questions if q.get("difficulty", "Medium") == difficulty]
                 print(f"Debug: After difficulty filter - {len(filtered)} questions")
-                if filtered:
-                    questions = filtered
+                questions = filtered
             
-            # If no questions match filters, return the original set
+            # If no questions match filters, keep the filtered result rather than returning unrelated questions
             if not questions:
-                print("Debug: No questions after filtering, restoring original set")
-                questions = all_questions
+                print("Debug: No questions match the selected filters")
             
             # Ensure questions are unique
             seen = set()
