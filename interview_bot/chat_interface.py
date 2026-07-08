@@ -121,11 +121,7 @@ class ChatBot:
                     "'Show me an easy Automation coding question' or\n" +
                     "'Give me a hard DSA question'"
                 )
-<<<<<<< HEAD
         
-=======
-
->>>>>>> 4f8dd752c6b6d73acc9ce3a04eb8b1f91cbcdfd8
         # Show solution for current coding question
         elif ("solution" in message or "approach" in message or "another" in message) and 'current_question' in self.context:
             question = self.context['current_question']
