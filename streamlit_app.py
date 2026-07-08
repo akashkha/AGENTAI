@@ -54,7 +54,7 @@ with col1:
     )
 
 with col2:
-    categories = ["All", "Selenium", "API Testing", "Framework Design", "TestNG", "Java Coding"]
+    categories = ["All", "Selenium", "API Testing", "Framework Design", "TestNG", "Java Coding", "Playwright"]
     category = st.selectbox(
         "Select Category",
         categories,

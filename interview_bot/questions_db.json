@@ -207,7 +207,8 @@
     "API Testing": ["REST", "SOAP", "GraphQL", "Security", "Performance"],
     "TestNG": ["Annotations", "Assertions", "Parallel", "Listeners", "DataProvider"],
     "Framework Design": ["POM", "Data-Driven", "Keyword-Driven", "BDD", "Hybrid"],
-    "Performance": ["JMeter", "Load Testing", "Stress Testing", "Monitoring", "Analysis"]
+    "Performance": ["JMeter", "Load Testing", "Stress Testing", "Monitoring", "Analysis"],
+    "Playwright": ["Selectors", "Browser Context", "Test Runner", "Debugging", "Cross-Browser"]
   },
   "difficulty_levels": {
     "Basic": "Fundamental concepts and simple implementations",
