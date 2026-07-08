@@ -299,6 +299,32 @@ class InterviewBot:
             # Start with default questions for the experience range
             questions.extend(self.default_questions.get(exp_range, []))
             
+            # Add Playwright-specific templates when Playwright is requested
+            if category == "Playwright":
+                questions.extend([
+                    {
+                        "question": "How do you design a Playwright test automation framework?",
+                        "answer": "Use Playwright page objects, browser context isolation, built-in auto waits, and CI/CD integration for robust automation.",
+                        "category": "Playwright",
+                        "difficulty": "Medium",
+                        "type": "Technical"
+                    },
+                    {
+                        "question": "How do you handle dynamic elements in Playwright?",
+                        "answer": "Use Playwright's auto-waiting, flexible selectors, and page.waitForSelector() to reliably handle dynamic UI elements.",
+                        "category": "Playwright",
+                        "difficulty": "Basic",
+                        "type": "Technical"
+                    },
+                    {
+                        "question": "What are the benefits of using Playwright over Selenium?",
+                        "answer": "Playwright supports Chromium, Firefox, and WebKit, has auto-waiting, and offers browser context isolation for modern automation.",
+                        "category": "Playwright",
+                        "difficulty": "Basic",
+                        "type": "Technical"
+                    }
+                ])
+            
             # Get company-specific questions if they exist
             if company in self.questions_db.get("companies", {}):
                 company_questions = self.questions_db["companies"][company].get(exp_range, [])
